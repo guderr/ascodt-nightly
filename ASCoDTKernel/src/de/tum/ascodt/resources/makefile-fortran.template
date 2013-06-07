@@ -1,0 +1,44 @@
+CC=gcc
+CXX=g++
+FC=gfortran
+RM=rm -f
+CPPFLAGS= -Icomponents/java -Isrc -I/usr/lib/jvm/java-6-openjdk/include -I/usr/lib/jvm/java-6-openjdk/include/linux -fPIC
+LDFLAGS=
+LDLIBS=
+FCFLAGS = -fpic
+
+components/java/__PATH_FULL_QUALIFIED_NAME__AbstractImplementation.o : components/java/__PATH_FULL_QUALIFIED_NAME__AbstractImplementation.f90 
+__TAB__$(FC) $(FCFLAGS) -c -o components/java/__PATH_FULL_QUALIFIED_NAME__AbstractImplementation.o components/java/__PATH_FULL_QUALIFIED_NAME__AbstractImplementation.f90
+src/__PATH_FULL_QUALIFIED_NAME__Implementation.o : src/__PATH_FULL_QUALIFIED_NAME__Implementation.f90 
+__TAB__$(FC) $(FCFLAGS) -c -o src/__PATH_FULL_QUALIFIED_NAME__Implementation.o src/__PATH_FULL_QUALIFIED_NAME__Implementation.f90
+components/java/__PATH_FULL_QUALIFIED_NAME__FProxy.o : components/java/__PATH_FULL_QUALIFIED_NAME__FProxy.f90 
+__TAB__$(FC) $(FCFLAGS) -c -o components/java/__PATH_FULL_QUALIFIED_NAME__FProxy.o components/java/__PATH_FULL_QUALIFIED_NAME__FProxy.f90
+
+-- INSERT HERE --
+
+SRCS_LIB+= components/java/__PATH_FULL_QUALIFIED_NAME__AbstractImplementation.f90 src/__PATH_FULL_QUALIFIED_NAME__Implementation.f90 components/java/__PATH_FULL_QUALIFIED_NAME__JNIProxy.cpp 
+SRCS_EXEC+= components/java/__PATH_FULL_QUALIFIED_NAME__AbstractImplementation.f90 src/__PATH_FULL_QUALIFIED_NAME__Implementation.f90 components/java/__PATH_FULL_QUALIFIED_NAME__FProxy.f90 components/java/__PATH_FULL_QUALIFIED_NAME__C2FProxy.cpp 
+
+
+
+CXX_OBJS_LIB=$(subst .cpp,.o,$(SRCS_LIB))
+OBJS_LIB=$(subst .f90,.o,$(CXX_OBJS_LIB))
+CXX_OBJS_EXEC=$(subst .cpp,.o,$(SRCS_EXEC))
+OBJS_EXEC=$(subst .f90,.o,$(CXX_OBJS_EXEC))
+
+
+lib__COMPONENT_NAME__.a: $(OBJS_LIB)
+__TAB__ar rc  -o native/lib__COMPONENT_NAME__.a $(OBJS_LIB)
+
+lib__COMPONENT_NAME__.so: $(OBJS_LIB)
+__TAB__$(FC) -shared $(OBJS_LIB) -o native/lib__COMPONENT_NAME__.so
+
+__COMPONENT_NAME__: $(OBJS_EXEC)
+__TAB__$(FC) $(OBJS_EXEC) -o native/__COMPONENT_NAME__ -lc -lstdc++ -lpthread
+
+
+clean:
+__TAB__$(RM) $(OBJS_LIB) $(OBJS_EXEC) *.mod native/lib__COMPONENT_NAME__.so native/lib__COMPONENT_NAME__.a native/__COMPONENT_NAME__
+
+dist-clean: clean
+__TAB__$(RM) lib__COMPONENT_NAME__.so

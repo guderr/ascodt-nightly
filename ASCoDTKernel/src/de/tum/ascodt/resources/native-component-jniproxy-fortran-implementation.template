@@ -1,0 +1,24 @@
+#include "__PATH_FULL_QUALIFIED_NAME__JNIProxy.h"
+
+extern "C" {
+
+     
+     void __COMPONENT_NAME___fproxy_createinstance_(void* &self);
+     void __COMPONENT_NAME___fproxy_destroyinstance_(void* &self);
+     
+} 
+
+JNIEXPORT void JNICALL Java___JNI_FULL_QUALIFIED_NAME__AbstractJavaNativeImplementation_createInstance(JNIEnv *env, jobject obj){
+  void* ref=NULL;
+  __COMPONENT_NAME___fproxy_createinstance_(ref);
+  
+  jfieldID id =env->GetFieldID(env->GetObjectClass(obj), "_ref", "J");
+  env->SetLongField(obj, id, (jlong)ref);
+}
+
+JNIEXPORT void JNICALL Java___JNI_FULL_QUALIFIED_NAME__AbstractJavaNativeImplementation_destroyInstance(JNIEnv *env, jobject obj,jlong ref){
+  void* cref = (void*) ref;
+  __COMPONENT_NAME___fproxy_destroyinstance_(cref);
+}
+
+-- INSERT HERE --

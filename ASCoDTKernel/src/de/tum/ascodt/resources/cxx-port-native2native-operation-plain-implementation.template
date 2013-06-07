@@ -1,0 +1,4 @@
+void __FULL_QUALIFIED_NAME__Native2NativePlainPort::__OPERATION_NAME__(__OPERATION_PARAMETERS_LIST__){
+     assert(_destination!=NULL);
+     _destination->__OPERATION_NAME__(__FUNCTION_CALL_PARAMETERS_LIST__);
+}

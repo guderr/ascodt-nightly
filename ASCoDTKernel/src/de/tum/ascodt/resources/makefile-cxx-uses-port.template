@@ -1,0 +1,1 @@
+SRCS += components/java/__USES_PORT_PATH__Native2JavaPlainPort.cpp components/java/__USES_PORT_PATH__Native2NativePlainPort.cpp components/java/__USES_PORT_PATH__NativeDispatcher.cpp

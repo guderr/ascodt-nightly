@@ -1,0 +1,13 @@
+
+extern "C" {
+     void __COMPONENT_NAME___fproxy___F_OPERATION_NAME___(void** ref__OPERATION_PARAMETERS_LIST_C2F__);
+}
+
+void invoker___OPERATION_NAME__(void** ref,int sockfd,int newsockfd, int buffer_size,char* rcvBuffer, char* sendBuffer){
+  __SOCKET_PULL__
+  
+  __COMPONENT_NAME___fproxy___F_OPERATION_NAME___(ref__FUNCTION_CALL_PARAMETERS_LIST__);
+  
+  __SOCKET_PUSH__
+  std::cout<<"finished invoking __OPERATION_NAME__"<<std::endl;
+}

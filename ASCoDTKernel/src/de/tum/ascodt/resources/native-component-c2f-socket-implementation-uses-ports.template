@@ -1,0 +1,52 @@
+
+extern "C" {
+  void __COMPONENT_NAME___fproxy_create_client_port_for___USES_PORT_AS___(long long* usePort,char* host,int& port,int& bufferSize);
+}
+void invoker_create_client_port_for___USES_PORT_AS__(void** ref,int sockfd,int newsockfd, int buffer_size,char* rcvBuffer, char* sendBuffer){
+  long long portref=0;
+  int port;
+  int hostname_len=0;
+  char* host;
+  readData((char*)&hostname_len,sizeof(int),rcvBuffer,newsockfd,buffer_size);
+  host = new char[hostname_len];
+  readData((char*)host,hostname_len,rcvBuffer,newsockfd,buffer_size);
+  readData((char*)&port,sizeof(int),rcvBuffer,newsockfd,buffer_size);
+  __COMPONENT_NAME___fproxy_create_client_port_for___USES_PORT_AS___(&portref,host,port,buffer_size);
+  
+  
+  sendData((char*)&portref,sizeof(long long),sendBuffer,newsockfd,buffer_size);
+  std::cout<<"finished port conn:"<<host<<","<<port<<std::endl;
+}
+  
+extern "C" {
+  void __COMPONENT_NAME___fproxy_connect_client_dispatcher___USES_PORT_AS___(void** ref,long long* dispatcher,char* host,int& port,int& bufferSize);
+}
+void invoker_connect_client_dispatcher___USES_PORT_AS__(void** ref,int sockfd,int newsockfd, int buffer_size,char* rcvBuffer, char* sendBuffer){
+  long long portref=0;
+  int port;
+  int hostname_len=0;
+  char* host;
+  readData((char*)&hostname_len,sizeof(int),rcvBuffer,newsockfd,buffer_size);
+  host = new char[hostname_len];
+
+  readData((char*)host,hostname_len,rcvBuffer,newsockfd,buffer_size);
+  readData((char*)&port,sizeof(int),rcvBuffer,newsockfd,buffer_size);
+   
+  __COMPONENT_NAME___fproxy_connect_client_dispatcher___USES_PORT_AS___(ref,&portref,host,port,buffer_size);
+  
+  
+  sendData((char*)&portref,sizeof(long long),sendBuffer,newsockfd,buffer_size);
+   std::cout<<"finished dispatcher conn:"<<host<<","<<port<<std::endl;
+}
+
+
+
+
+extern "C" {
+  void __COMPONENT_NAME___fproxy_disconnect_client_dispatcher___USES_PORT_AS___(void** ref);
+}
+
+void invoker_disconnect_client_dispatcher___USES_PORT_AS__(void** ref,int sockfd,int newsockfd, int buffer_size,char* rcvBuffer, char* sendBuffer){
+  __COMPONENT_NAME___fproxy_disconnect_client_dispatcher___USES_PORT_AS___(ref);
+}
+

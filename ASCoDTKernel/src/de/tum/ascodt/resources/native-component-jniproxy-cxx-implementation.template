@@ -1,0 +1,15 @@
+#include "__PATH_FULL_QUALIFIED_NAME__JNIProxy.h"
+#include "__PATH_FULL_QUALIFIED_NAME__Implementation.h"
+__INCLUDE_USES_PORTS__
+#include <fstream>  
+
+JNIEXPORT void JNICALL Java___JNI_FULL_QUALIFIED_NAME__AbstractJavaNativeImplementation_createInstance(JNIEnv *env, jobject obj){
+  __CXX_FULL_QUALIFIED_NAME__Implementation *ref=new __CXX_FULL_QUALIFIED_NAME__Implementation();
+  jfieldID id =env->GetFieldID(env->GetObjectClass(obj), "_ref", "J");
+  env->SetLongField(obj, id, (jlong)ref);
+}
+
+JNIEXPORT void JNICALL Java___JNI_FULL_QUALIFIED_NAME__AbstractJavaNativeImplementation_destroyInstance(JNIEnv *env, jobject obj,jlong ref){
+  delete ((__CXX_FULL_QUALIFIED_NAME__Implementation*)ref);
+}
+-- INSERT HERE --

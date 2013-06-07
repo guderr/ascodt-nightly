@@ -1,0 +1,67 @@
+
+  /**
+   * Uses port
+   */
+  protected __USES_PORT_TYPE__Dispatcher ___USES_PORT_AS__ = new __USES_PORT_TYPE__Dispatcher();
+  
+    
+  /**
+   * @see Case class 
+   */
+  public void connect__USES_PORT_AS__(__USES_PORT_TYPE__  port) throws de.tum.ascodt.utils.exceptions.ASCoDTException {
+    assert(_isLocked);
+    assert(port!=null);
+    if (___USES_PORT_AS__==null ) {
+      throw new de.tum.ascodt.utils.exceptions.ASCoDTException( getClass().getName(), "connect__USES_PORT_AS__(...)", "tried to connect uses port to multiple other ports", null );
+    }
+    else {
+      ___USES_PORT_AS__.connect(port);
+    }
+  }
+  
+  
+  /**
+   * @see Case class 
+   */
+  public __USES_PORT_TYPE__ createPortFor__USES_PORT_AS__(de.tum.ascodt.repository.Target  target) {
+    __USES_PORT_TYPE__ result = null;
+        
+    if (target.getType() == de.tum.ascodt.repository.Target.TargetType.JavaLocal) {
+      result = new __USES_PORT_TYPE__PlainJavaPort();
+    }
+    
+    if (target.getType() == de.tum.ascodt.repository.Target.TargetType.JavaNative) {
+      result = new __USES_PORT_TYPE__PlainJavaPort();
+    }
+    
+    if (target.getType() == de.tum.ascodt.repository.Target.TargetType.ReverseFortranRemoteSocket) {
+        result = new __USES_PORT_TYPE__PlainJavaPort();
+    }
+    
+    if (target.getType() == de.tum.ascodt.repository.Target.TargetType.FortranRemoteSocket) {
+        result = new __USES_PORT_TYPE__PlainJavaPort();
+    }
+    
+    /*if (target.getType() == de.tum.ascodt.repository.Target.TargetType.CxxRemoteSocket){
+      result = new __USES_PORT_TYPE__Java2CxxRemoteSocketPort();
+    }
+    if (target.getType() == de.tum.ascodt.repository.Target.TargetType.CxxRemoteSocket){
+      result = new __USES_PORT_TYPE__ReverseJava2CxxRemoteSocketPort();
+    }*/ 
+    assert(result!=null);
+    
+    return result;
+  }
+  
+
+  /**
+   * @see Case class 
+   */
+  public void disconnect__USES_PORT_AS__(__USES_PORT_TYPE__  port) throws de.tum.ascodt.utils.exceptions.ASCoDTException {
+    assert(_isLocked);
+    assert(port!=null);
+    if (___USES_PORT_AS__==null ) {
+      throw new de.tum.ascodt.utils.exceptions.ASCoDTException( getClass().getName(), "disconnect__USES_PORT_AS__(...)", "tried to disconnect uses port that has not been connected to any other port before", null );
+    }
+    ___USES_PORT_AS__.disconnect(port);
+  }

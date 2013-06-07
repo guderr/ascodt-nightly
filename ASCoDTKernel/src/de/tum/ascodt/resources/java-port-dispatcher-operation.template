@@ -1,0 +1,12 @@
+  public void __OPERATION_NAME__(__OPERATION_PARAMETERS_LIST__) {
+    for(__PORT_NAME__ port: _destinations)
+      port.__OPERATION_NAME__(__FUNCTION_CALL_PARAMETERS_LIST__);
+  }
+  
+  public void __OPERATION_NAME__ForIntegerEnums(__INT_ENUM_OPERATION_PARAMETERS_LIST__) {
+    for(__PORT_NAME__ port: _destinations){
+      __PREPARE_ENUMS__
+      port.__OPERATION_NAME__(__INT_ENUM_FUNCTION_CALL_PARAMETERS_LIST__);
+      __WRITE_ENUMS__
+    }
+  }

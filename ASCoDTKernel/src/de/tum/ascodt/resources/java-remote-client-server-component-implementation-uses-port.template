@@ -1,0 +1,126 @@
+
+  /**
+   * Uses port
+   */
+  protected __USES_PORT_TYPE__SocketDispatcher ___USES_PORT_AS__ = null;
+  
+  
+ 
+  
+  
+  /**
+   * @see Case class 
+   */
+  public __USES_PORT_TYPE__ createPortFor__USES_PORT_AS__(de.tum.ascodt.repository.Target  target) {
+    
+    __USES_PORT_TYPE__AbstractSocketPort result = null;
+    if (
+      target.getType()==de.tum.ascodt.repository.Target.TargetType.JavaLocal||
+      target.getType()==de.tum.ascodt.repository.Target.TargetType.JavaNative
+    ) {
+      result = new __USES_PORT_TYPE__Socket2JavaPlainPort();
+      long port_ref=createClientPortFor__USES_PORT_AS__(result);
+                  
+      result.setReference(port_ref); 
+    }
+   
+    
+    
+    
+    
+    assert(result!=null);
+    
+    return result;
+  }
+  
+  
+
+   long createClientPortFor__USES_PORT_AS__(__USES_PORT_TYPE__AbstractSocketPort socketPort){
+     int method=__CREATE_PORT_ID__;
+     long ref=-1;
+     try{
+          sendIntData(method);
+          sendStringData(socketPort.getHost());
+          sendIntData(socketPort.getPort());
+          socketPort.open();
+          ref=readLongData();
+          
+     }catch(java.io.IOException ioe){
+     } catch (java.lang.InterruptedException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+     } catch (java.util.concurrent.ExecutionException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+     }
+     
+     return ref;
+  }
+  
+  /**
+   * @see Case class 
+   */
+  public void connect__USES_PORT_AS__(final __USES_PORT_TYPE__  port) throws de.tum.ascodt.utils.exceptions.ASCoDTException {
+    //assert(_isLocked);
+    assert(port!=null);
+     if(___USES_PORT_AS__==null){
+       
+        ___USES_PORT_AS__ = new __USES_PORT_TYPE__SocketDispatcher();
+        long dispRef = connectClientDispatcher__USES_PORT_AS__(___USES_PORT_AS__.getHost(),___USES_PORT_AS__.getPort());
+        ___USES_PORT_AS__.setReference(dispRef);
+     }
+     ___USES_PORT_AS__.connect(port);
+              
+   
+   
+  }
+  
+  public long  connectClientDispatcher__USES_PORT_AS__(String host,int port){
+     int method=__CONNECT_DISPATCHER_PORT_ID__;
+     long ref=-1;
+     try{
+          System.out.println("host to send:"+host);
+          sendIntData(method);
+          sendStringData(host);
+          sendIntData(port);
+           ___USES_PORT_AS__.open();
+          ref=readLongData();
+         
+     }catch(java.io.IOException ioe){
+     } catch (java.lang.InterruptedException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+     } catch (java.util.concurrent.ExecutionException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+     }
+     return ref;
+  }
+  
+  
+  
+  /**
+   * @see Case class 
+   */
+  public void disconnect__USES_PORT_AS__(final __USES_PORT_TYPE__  port) throws de.tum.ascodt.utils.exceptions.ASCoDTException {
+    assert(port!=null);
+    if(___USES_PORT_AS__!=null&&___USES_PORT_AS__.isConnected()){
+               assert(___USES_PORT_AS__!=null );
+               ___USES_PORT_AS__.disconnect(port);
+               if(!___USES_PORT_AS__.isConnected()){
+                 disconnectDispatcher__USES_PORT_AS__();
+                 ___USES_PORT_AS__.close();
+                 ___USES_PORT_AS__ = null;
+               }
+    }
+  }
+  
+  public void disconnectDispatcher__USES_PORT_AS__(){
+     int methodId=__DISCONNECT_DISPATCHER_PORT_ID__;
+     try{
+          sendIntData(methodId);
+     }catch(java.io.IOException ioe){
+     }
+  }
+  
+  

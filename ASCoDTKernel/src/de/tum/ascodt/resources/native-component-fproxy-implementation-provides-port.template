@@ -1,0 +1,10 @@
+
+subroutine __COMPONENT_NAME___fproxy___OPERATION_NAME__(this__OPERATION_PARAMETERS_LIST__)
+    Use __FULL_QUALIFIED_NAME__Implementation
+    Use, intrinsic :: iso_c_binding
+    Type( c_ptr ),intent(in) :: this
+    type( __COMPONENT_NAME__Implementation ),pointer :: pt
+    __PARAMETER_LIST_TYPES_INTENTS__
+    call c_f_pointer(this,pt)
+    call pt%__OPERATION_NAME__(__FUNCTION_CALL_PARAMETERS_LIST__)
+end subroutine __COMPONENT_NAME___fproxy___OPERATION_NAME__

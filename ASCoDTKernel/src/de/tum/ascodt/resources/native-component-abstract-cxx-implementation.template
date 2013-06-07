@@ -1,0 +1,11 @@
+#include "__GENERATED_OUTPUT____PATH_FULL_QUALIFIED_NAME__AbstractImplementation.h"
+
+__CXX_FULL_QUALIFIED_NAME__AbstractImplementation::__COMPONENT_NAME__AbstractImplementation(){
+     __INIT_USES_VARS__
+}
+
+__CXX_FULL_QUALIFIED_NAME__AbstractImplementation::~__COMPONENT_NAME__AbstractImplementation(){
+
+}
+
+-- INSERT HERE --

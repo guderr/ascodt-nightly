@@ -1,0 +1,6 @@
+
+JNIEXPORT void JNICALL Java___JNI_FULL_QUALIFIED_NAME__JavaNativeImplementation___OPERATION_NAME__(JNIEnv *env, jobject obj,jlong ref__OPERATION_PARAMETERS_LIST__){
+  __START_METHOD_CALL__
+  ((__CXX_FULL_QUALIFIED_NAME__Implementation*)ref)->__OPERATION_NAME__(__FUNCTION_CALL_PARAMETERS_LIST__);
+  __END_METHOD_CALL__
+}

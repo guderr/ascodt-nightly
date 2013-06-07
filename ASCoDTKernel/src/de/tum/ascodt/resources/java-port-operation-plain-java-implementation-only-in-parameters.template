@@ -1,0 +1,12 @@
+
+  public void __OPERATION_NAME__(__OPERATION_PARAMETERS_LIST__) {
+    ( new Thread() {
+        public void run() {
+          _destination.lock();
+          _destination.__OPERATION_NAME__(__FUNCTION_CALL_PARAMETERS_LIST__);
+          _destination.unlock();
+        }
+      }
+    ).start();
+  }
+  

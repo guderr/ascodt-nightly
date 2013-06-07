@@ -1,0 +1,208 @@
+Package de.tum.ascodt.sidlcompiler.frontend;
+
+Helpers
+  all       =	[ 0 .. 127 ];
+	digit 	  =	[ '0' .. '9' ];
+	nondigit 	=	[ '_' + [ [ 'a' .. 'z' ] + [ 'A' .. 'Z' ] ] ];
+	nonzero_digit 	= 	[ '1' .. '9' ];
+
+	not_star 	= [ all - '*' ];
+	not_star_not_slash 	= 	[ not_star - '/' ];
+
+	cr 	= 	13;   
+	lf 	= 	10;
+	tab	= 	9;  
+	line_terminator     = lf | cr | cr lf; 
+	not_line_terminator = [[all - cr] - lf];
+	unsigned_suffix    =    'u' | 'U';
+	long_suffix   =    'l' | 'L'; 
+	integer_suffix     =    unsigned_suffix long_suffix ? | long_suffix unsigned_suffix ?; 
+	decimal_constant   =    digit * ;
+     integer_constant    =  decimal_constant integer_suffix ?;
+Tokens 
+
+	l_angle_bracket = '<';
+	r_angle_bracket = '>';
+	
+  comma     =   ',';
+  dot       =   '.';
+	semicolon = 	';';
+  l_brace   =   '{';
+  r_brace   =   '}';
+  l_bracket =   '(';
+  r_bracket =   ')';
+  equals    =   '=';
+
+  int_token 	      = 'int';
+  double_token      = 'double';
+  bool_token        = 'bool';
+  opaque_token      = 'opaque';
+  string_token      = 'string';
+  array_token       = '[]';
+  
+  in_token          = 'in';
+  inout_token       = 'inout';
+
+  package_token     = 'package';
+  class_token       = 'class';
+  target_token      = '@target';
+  interface_token   = 'interface';
+  extends_token     = 'extends';
+  implements_token  = 'implements-all';
+  uses_token        = 'uses';
+  as_token          = 'as';
+  enum_token        = 'enum';
+  blank 	= 	( cr | lf | tab | ' ' ) +;
+	
+  decimal_constant 	= 	nonzero_digit digit *;
+  signed_decimal_number		=	'-' ? digit +;
+
+  identifier 	= 	nondigit ( digit | nondigit ) *;
+
+  traditional_comment   = '/*' not_star+ '*'+ (not_star_not_slash not_star* '*'+)* '/';
+  documentation_comment = '/**' '*'* (not_star_not_slash not_star* '*'+)* '/';
+  end_of_line_comment   = '//' not_line_terminator * line_terminator;
+  
+  constant = integer_constant;
+  
+Ignored Tokens
+  
+  traditional_comment,
+  documentation_comment,
+  end_of_line_comment,
+  blank;
+  
+Productions
+	
+  declaration 	= package_list         { -> New declaration( [package_list.package] ) };
+
+  package_list  {-> package*} = 
+      {single} package                 {-> [package.package] }
+    | {list}   package package_list    {-> [package_list.package, package.package] };
+
+  package  { -> package } = 
+    {unversioned_package}  package_token identifier l_brace package_element_list r_brace
+                                       { -> New package(identifier,[package_element_list.package_element]) }; 
+  
+  package_element_list { -> package_element* } =
+      {single}  package_element                       { -> [package_element.package_element] }
+    | {list}    package_element_list package_element  { -> [package_element_list.package_element,package_element.package_element] };
+    
+  package_element { -> package_element } =
+      {subpackage}                                    package                                                                                     { -> New package_element.subpackage(package) }
+    | {class_without_target}                          class_token     identifier l_brace r_brace                                                  { -> New package_element.class(Null,identifier,[],[]) } 
+    | {class_with_supertype_without_target}           class_token     identifier implements_token type_list l_brace r_brace                       { -> New package_element.class(Null,identifier,[type_list.user_defined_type],[]) } 
+    | {class_with_uses_without_target}                class_token     identifier uses_list l_brace r_brace                                        { -> New package_element.class(Null,identifier,[],[uses_list.uses]) } 
+    | {class_with_supertype_and_uses_without_target}  class_token     identifier implements_token [implements_type_list]:type_list uses_list l_brace r_brace  { -> New package_element.class(Null,identifier,[implements_type_list.user_defined_type],[uses_list.uses]) } 
+    | {class_with_target}                             target_token equals [target]:identifier class_token     [classname]:identifier l_brace r_brace                                                  { -> New package_element.class(target,classname,[],[]) } 
+    | {class_with_supertype_with_target}              target_token equals [target]:identifier class_token     [classname]:identifier implements_token type_list l_brace r_brace                       { -> New package_element.class(target,classname,[type_list.user_defined_type],[]) } 
+    | {class_with_uses_with_target}                   target_token equals [target]:identifier class_token     [classname]:identifier uses_list l_brace r_brace                                        { -> New package_element.class(target,classname,[],[uses_list.uses]) } 
+    | {class_with_supertype_and_uses_with_target}     target_token equals [target]:identifier class_token     [classname]:identifier implements_token [implements_type_list]:type_list uses_list l_brace r_brace  { -> New package_element.class(target,classname,[implements_type_list.user_defined_type],[uses_list.uses]) } 
+    | {interface}                                     interface_token identifier l_brace operation_list? r_brace                                  { -> New package_element.interface(identifier,[],[operation_list.operation]) }  
+    | {interface_with_supertype}                      interface_token identifier extends_token  type_list l_brace operation_list? r_brace         { -> New package_element.interface(identifier,[type_list.user_defined_type],[operation_list.operation]) }
+    | {enum_declaration}      enum_token identifier l_brace enumerator_list r_brace semicolon { -> New package_element.enum_declaration(identifier,[enumerator_list.enumerator])};
+  
+
+     
+          
+  uses_list {-> uses* } =
+      {single}   uses_token type_list as_token identifier {-> [New uses([type_list.user_defined_type],identifier)]}
+    | {list}     uses_token type_list as_token identifier comma uses_list {-> [New uses([type_list.user_defined_type],identifier), uses_list.uses] };
+ 
+  type_identifier { -> identifier* } =
+      {local}  identifier                     { -> [identifier] }
+    | {global} identifier dot type_identifier { -> [identifier,type_identifier.identifier] };
+    
+  type_list { -> user_defined_type* } =
+      {single}   type_identifier                 { -> [New user_defined_type([type_identifier.identifier])] }
+    | {list}     type_identifier comma type_list { -> [New user_defined_type([type_identifier.identifier]),type_list.user_defined_type] }; 
+
+  operation_list { -> operation* } =
+      {single}   operation semicolon                { -> [operation.operation] }
+    | {list}     operation semicolon operation_list { -> [operation.operation,operation_list.operation] };
+
+  parameter_list { -> parameter* } = 
+        {single} parameter                       { -> [parameter.parameter] } 
+      | {list}   parameter comma parameter_list  { -> [parameter.parameter,parameter_list.parameter] };
+  
+  enumerator_list { -> enumerator* } =
+        {single} enumerator {-> [enumerator.enumerator] } 
+      | {list} enumerator comma enumerator_list {-> [enumerator.enumerator,enumerator_list.enumerator] };  
+  
+  built_in_type { -> built_in_type } =     
+      {int}    int_token     { -> New built_in_type.int() }
+    | {double} double_token  { -> New built_in_type.double() }
+    | {bool}   bool_token    { -> New built_in_type.bool() }
+    | {opaque} opaque_token    { -> New built_in_type.opaque() }
+    | {string} string_token  { -> New built_in_type.string() };
+
+  parameter { -> parameter } = 
+      {parameter_in_built_in}           in_token     built_in_type  identifier { -> New parameter.parameter_in(built_in_type.built_in_type,identifier) }
+    | {parameter_inout_built_in}        inout_token  built_in_type  identifier { -> New parameter.parameter_out(built_in_type.built_in_type,identifier) }
+    | {parameter_array_in_built_in}     in_token     built_in_type  identifier array_token { -> New parameter.parameter_array_in(built_in_type.built_in_type,identifier) }
+    | {parameter_array_inout_built_in}  inout_token  built_in_type  identifier array_token { -> New parameter.parameter_array_out(built_in_type.built_in_type,identifier) }
+    | {parameter_in_enum}  in_token enum_type identifier { -> New parameter.parameter_in_enum(enum_type.user_defined_type,identifier) }
+    | {parameter_inout_enum}  inout_token enum_type identifier { -> New parameter.parameter_out_enum(enum_type.user_defined_type,identifier) }
+    | {parameter_array_in_enum}  in_token enum_type identifier array_token { -> New parameter.parameter_array_in_enum(enum_type.user_defined_type,identifier) }
+    | {parameter_array_inout_enum}  inout_token enum_type identifier array_token { -> New parameter.parameter_array_out_enum(enum_type.user_defined_type,identifier) };
+  
+  enum_type {-> user_defined_type} = 
+     {single} enum_type_identifier { -> New user_defined_type([enum_type_identifier.identifier]) };
+  
+  enum_type_identifier { -> identifier* } =
+      {local}  identifier  { -> [identifier] }
+    | {global} identifier dot enum_type_identifier { -> [identifier,enum_type_identifier.identifier] };
+  operation { -> operation } = 
+    identifier l_bracket parameter_list? r_bracket                             { -> New operation(identifier,[parameter_list.parameter]) };
+  
+  additional_enumerator    =    
+          comma enumerator ;
+          
+  enumerator {->enumerator} = 
+      {automatic} identifier { -> New enumerator.auto_enumerator(identifier) }
+     |{specific} identifier equals constant { -> New enumerator.specific_enumerator(identifier,constant)};
+  
+  
+ 
+Abstract Syntax Tree
+
+  declaration   = package*;
+
+  package = [name]:identifier package_element*;
+
+  package_element =
+      {subpackage}  package
+    | {class}       [target]:identifier? [name]:identifier [provides]:user_defined_type*  uses*
+    | {interface}   [name]:identifier [supertype]:user_defined_type* operation*
+    | {enum_declaration} [name]:identifier enumerator*;
+
+  uses = 
+    [type]:user_defined_type* [as]:identifier;
+    
+  user_defined_type = identifier*;
+
+  built_in_type =     
+      {int}    
+    | {double} 
+    | {bool}
+    | {opaque}   
+    | {string};
+     
+  operation = 
+    [name]:identifier [parameter]:parameter*;
+
+  parameter =
+      {parameter_in}         [type]:built_in_type     [name]:identifier
+    | {parameter_array_in}   [type]:built_in_type     [name]:identifier
+    | {parameter_out}        [type]:built_in_type     [name]:identifier
+    | {parameter_array_out}  [type]:built_in_type     [name]:identifier
+    | {parameter_in_enum}    [type]:user_defined_type [name]:identifier
+    | {parameter_out_enum}        [type]:user_defined_type     [name]:identifier
+    | {parameter_array_out_enum}  [type]:user_defined_type     [name]:identifier
+    | {parameter_array_in_enum}    [type]:user_defined_type [name]:identifier;
+    
+  
+  enumerator =
+      {auto_enumerator} [name]:identifier
+    | {specific_enumerator} [name]:identifier [value]:constant;  
+  

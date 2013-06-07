@@ -1,0 +1,4 @@
+void __C_FULL_QUALIFIED_NAME__c2socket_plain_port___OPERATION_NAME___(long long* ref__OPERATION_PARAMETERS_LIST__){
+     __PREPARE__STRING_ARGS__
+     ((__CXX_FULL_QUALIFIED_NAME__Cxx2SocketPlainPort*)*ref)->__CXX_OPERATION_NAME__(__FUNCTION_CALL_PARAMETERS_LIST__);
+}

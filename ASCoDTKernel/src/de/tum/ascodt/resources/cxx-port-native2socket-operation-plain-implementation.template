@@ -1,0 +1,8 @@
+void __FULL_QUALIFIED_NAME__Cxx2SocketPlainPort::__OPERATION_NAME__(__OPERATION_PARAMETERS_LIST__){
+     //assert(_destination!=NULL);
+     __SWITCH_SYNC_ASYNC__
+     int methodId=__OPERATION_ID__;
+     sendData((char*) &methodId, sizeof(int),_sendBuffer,_newsockfd,_buffer_size);
+     __SOCKET_PUSH__
+     __SOCKET_PULL__
+}

@@ -1,0 +1,53 @@
+#ifndef __INCLUDE_GUARD_FULL_QUALIFIED_NAME__NATIVESOCKETDISPATCHER_H_
+#define __INCLUDE_GUARD_FULL_QUALIFIED_NAME__NATIVESOCKETDISPATCHER_H_ 
+
+#include "__PATH_FULL_QUALIFIED_NAME__NativeDispatcher.h"
+#include <iostream>
+#include <vector>
+#include <pthread.h>
+__OPEN_PACKAGE__
+     class __PORT_NAME__NativeSocketDispatcher;
+__CLOSE_PACKAGE__
+
+
+
+#ifdef __cplusplus
+  extern "C" {
+#endif
+
+
+          
+
+
+#ifdef __cplusplus
+  }
+#endif
+
+
+class __FULL_QUALIFIED_NAME__NativeSocketDispatcher: public __FULL_QUALIFIED_NAME__NativeDispatcher{
+  private:
+    pthread_t _task;
+    int _sockfd;
+    int _newsockfd;
+    int _buffer_size;
+    char *_rcvBuffer;
+    char *_sendBuffer;
+    
+    void open(char* hostname,int port,int &sockfd,int &newsockfd);
+    void open(int port,int &sockfd,int &newsockfd);
+    void sendData(char* data, size_t numberOfBytes, char* sendBuffer, int newsockfd,int bufferSize);
+    void readData(char* data,size_t size_of_data,char* readBuffer,int newsockfd, int bufferSize);
+    void close(int &sockfd,int &newsockfd);
+    
+  public:
+    __PORT_NAME__NativeSocketDispatcher(char* host,int port,int bufferSize);
+    __PORT_NAME__NativeSocketDispatcher(int port,int bufferSize);
+    ~__PORT_NAME__NativeSocketDispatcher();
+    void dispatch();
+  
+    
+   
+    
+};
+
+#endif

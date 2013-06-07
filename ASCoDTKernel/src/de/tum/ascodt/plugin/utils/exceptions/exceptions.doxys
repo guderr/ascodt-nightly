@@ -1,0 +1,19 @@
+/**
+
+ @dir "Exception concept"
+ 
+ ASCoDT's exception handling is rather simple: 
+ 
+ - After an exception, the workbench has to be rolled back to the last valid 
+   state. If a project, e.g., is created and the creation fails, everything is 
+   removed and the project does not show up in the project overview. The user
+   has to continue with the old state.
+ - An exception should be catched not deeper in the call stack than the place, 
+   where one can really roll-back the application's state.
+ - An exception should be catched as early as possible.
+ - All exceptions should be logged due to the ErrorWriterDevice. 
+ - If an exception can only partially be cleaned-up, the code should catch it,
+   perform the clean-up, wrap it into an ASoDTException, and throw this one 
+   again.
+ 
+ */

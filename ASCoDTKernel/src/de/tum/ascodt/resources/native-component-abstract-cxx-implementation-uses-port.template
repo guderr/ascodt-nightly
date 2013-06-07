@@ -1,0 +1,12 @@
+/**
+ * @see Case class 
+ */
+ void __CXX_FULL_QUALIFIED_NAME__AbstractImplementation::connect__USES_PORT_AS__(__USES_PORT_TYPE__NativeDispatcher* port){
+   ___USES_PORT_AS__ = port; 
+ }
+ 
+ void __CXX_FULL_QUALIFIED_NAME__AbstractImplementation::disconnect__USES_PORT_AS__(){
+    delete ___USES_PORT_AS__;
+    ___USES_PORT_AS__=NULL;
+ }
+ 

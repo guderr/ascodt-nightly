@@ -1,0 +1,6 @@
+       /**
+        * @see Case class 
+        */
+       void connect__USES_PORT_AS__(__USES_PORT_TYPE__NativeDispatcher* port);
+       void disconnect__USES_PORT_AS__();
+ 

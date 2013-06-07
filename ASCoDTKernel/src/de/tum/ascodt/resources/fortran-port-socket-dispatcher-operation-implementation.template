@@ -1,0 +1,13 @@
+subroutine __OPERATION_NAME___internal(this__OPERATION_PARAMETERS_LIST__)
+     use, intrinsic :: iso_c_binding
+     class(__PORT_NAME__NativeSocketDispatcher)::this
+     __OPERATION_PARAMETERS_TYPES_LIST_FOR_C__
+     call __C_FULL_QUALIFIED_NAME___f2c_nsd___OPERATION_NAME__(this%reference__FUNCTION_CALL_PARAMETERS_LIST_FOR_C__)
+end subroutine __OPERATION_NAME___internal
+
+subroutine __OPERATION_NAME__(this__OPERATION_PARAMETERS_LIST__)
+     use, intrinsic :: iso_c_binding
+     class(__PORT_NAME__NativeSocketDispatcher)::this
+     __OPERATION_PARAMETERS_TYPES_LIST__
+     call this%__OPERATION_NAME___internal(__FUNCTION_CALL_PARAMETERS_LIST__)
+end subroutine __OPERATION_NAME__

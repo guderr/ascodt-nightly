@@ -1,0 +1,2 @@
+JNIEXPORT void JNICALL Java___JNI_FULL_QUALIFIED_NAME__AbstractJavaNativeImplementation_connect__USES_PORT_AS__(JNIEnv *env, jobject obj,jlong ref,jlong portRef);
+JNIEXPORT void JNICALL Java___JNI_FULL_QUALIFIED_NAME__AbstractJavaNativeImplementation_disconnect__USES_PORT_AS__(JNIEnv *env, jobject obj,jlong ref);

@@ -1,0 +1,21 @@
+CC=gcc
+CXX=g++
+RM=rm -f
+CPPFLAGS= -Icomponents/java -Isrc -I/usr/lib/jvm/java-6-openjdk/include -I/usr/lib/jvm/java-6-openjdk/include/linux -fPIC
+LDFLAGS=
+LDLIBS=
+
+SRCS= components/java/__PATH_FULL_QUALIFIED_NAME__AbstractImplementation.cpp src/__PATH_FULL_QUALIFIED_NAME__Implementation.cpp components/java/__PATH_FULL_QUALIFIED_NAME__JNIProxy.cpp 
+-- INSERT HERE --
+OBJS=$(subst .cpp,.o,$(SRCS))
+
+all: lib__COMPONENT_NAME__.so
+
+lib__COMPONENT_NAME__.so: $(OBJS)
+__TAB__$(CXX) -shared $(OBJS) -o native/lib__COMPONENT_NAME__.so
+
+clean:
+__TAB__$(RM) $(OBJS)
+
+dist-clean: clean
+__TAB__$(RM) lib__COMPONENT_NAME__.so

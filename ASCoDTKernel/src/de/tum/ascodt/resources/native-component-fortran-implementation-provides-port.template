@@ -1,0 +1,5 @@
+subroutine __OPERATION_NAME__(this__OPERATION_PARAMETERS_LIST__)
+    class( __COMPONENT_NAME__Implementation)::this
+    __PARAMETER_LIST_TYPES_INTENTS__
+    !put your implementation here
+end subroutine __OPERATION_NAME__

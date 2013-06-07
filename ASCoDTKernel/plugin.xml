@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="de.tum.ascodt.plugin.extensions.Project" name="ASCoDT Project extension" schema="schema/de.tum.ascodt.plugin.extensions.Project.exsd"/>
+    <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="de.tum.ascodt.plugin.ui.perspectives.ASCoDTPerspective"
+            id="de.tum.ascodt.plugin.perspectives.ASCoDTPerspective"
+            name="ASCoDTPerspective">
+      </perspective>
+   </extension>
+   <extension
+         id="de.tum.ascodt.plugin.ui.wizards"
+         name="ASCoDT New wizards"
+         point="org.eclipse.ui.newWizards">
+       <category
+            id="de.tum.ascodt.plugin.categories.ascodt"
+            name="ASCoDT">
+      </category>
+      <wizard
+            category="de.tum.ascodt.plugin.categories.ascodt"
+            class="de.tum.ascodt.plugin.ui.wizards.NewProjectWizard"
+            finalPerspective="de.tum.ascodt.plugin.perspectives.ASCoDTPerspective"
+            hasPages="true"
+            id="de.tum.ascodt.plugin.ui.wizards.NewProjectWizard"
+            name="ASCoDT Project"
+            preferredPerspectives="de.tum.ascodt.plugin.perspectives.ASCoDTPerspective"
+            project="true">
+      </wizard>
+     
+      <wizard
+            category="de.tum.ascodt.plugin.categories.ascodt"
+            class="de.tum.ascodt.plugin.ui.wizards.NewComponentWizard"
+            finalPerspective="de.tum.ascodt.plugin.perspectives.ASCoDTPerspective"
+            hasPages="true"
+            id="de.tum.ascodt.plugin.ui.wizards.NewComponentWizard"
+            name="ASCoDT Component"
+            preferredPerspectives="de.tum.ascodt.plugin.perspectives.ASCoDTPerspective"
+            project="false">
+      </wizard>
+      <wizard
+            category="de.tum.ascodt.plugin.categories.ascodt"
+            class="de.tum.ascodt.plugin.ui.wizards.NewWorkbenchWizard"
+            finalPerspective="de.tum.ascodt.plugin.perspectives.ASCoDTPerspective"
+            hasPages="true"
+            id="de.tum.ascodt.plugin.ui.wizards.NewWorkbenchWizard"
+            name="ASCoDT Workbench"
+            preferredPerspectives="de.tum.ascodt.plugin.perspectives.ASCoDTPerspective"
+            project="false">
+      </wizard>
+      <wizard
+            category="de.tum.ascodt.plugin.categories.ascodt"
+            class="de.tum.ascodt.plugin.ui.wizards.NewComponentUIWizard"
+            finalPerspective="de.tum.ascodt.plugin.perspectives.ASCoDTPerspective"
+            id="de.tum.ascodt.plugin.ui.wizards.NewComponentUIWizard"
+            name="ASCoDT Component UI"
+            preferredPerspectives="de.tum.ascodt.plugin.perspectives.ASCoDTPerspective"
+            project="false">
+      </wizard>
+   </extension>
+   <extension
+         id="de.tum.ascodt.plugin.project.natures.ASCoDTNature"
+         name="ASCoDTNature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="de.tum.ascodt.plugin.project.natures.ASCoDTNature">
+         </run>
+      </runtime>
+      <builder
+            id="de.tum.ascodt.plugin.project.builders.ProjectBuilder">
+      </builder>
+      <!-- TODO <builder
+            id="de.tum.ascodt.plugin.project.builders.ASCoDTProjectBuilder">
+      </builder>-->
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category id="de.tum.ascodt.plugin.catagery" name="ASCoDT"/>
+      <view
+            allowMultiple="false"
+            class="de.tum.ascodt.plugin.ui.views.Palette"
+            id="de.tum.ascodt.plugin.ui.views.Palette"
+            name="ASCoDT Palette"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            category="de.tum.ascodt.plugin.catagery"
+            class="de.tum.ascodt.plugin.ui.views.ASCoDTNavigator"
+            id="de.tum.ascodt.plugin.ui.views.ASCoDTNavigator"
+            name="ASCoDT Navigator"
+            restorable="true">
+            
+      </view>
+      <view
+            category="de.tum.ascodt.plugin.catagery"
+            class="de.tum.ascodt.plugin.ui.views.UIViewContainer"
+            id="de.tum.ascodt.plugin.ui.views.UIViewContainer"
+            name="ASCoDT UI Container"
+            restorable="true">
+      </view>
+      <view
+            class="de.tum.ascodt.plugin.ui.views.AppsViewContainer"
+            id="de.tum.ascodt.plugin.ui.views.AppsViewContainer"
+            name="ASCoDT Application Container"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.navigatorContent">
+      <navigatorContent
+            activeByDefault="true"
+            contentProvider="de.tum.ascodt.plugin.ui.navigator.ASCoDTNavigatorContentProvider"
+            id="de.tum.ascodt.plugin.ui.navigator.ASCoDTContent"
+            labelProvider="de.tum.ascodt.plugin.ui.navigator.ASCoDTLabelProvider"
+            name="ASCoDT Content"
+            priority="low">
+         <triggerPoints>
+            <or>
+               <instanceof
+                     value="de.tum.ascodt.plugin.project.ProjectBuilder">
+               </instanceof>
+               <instanceof
+                     value="de.tum.ascodt.plugin.project.Project">
+               </instanceof>
+               <instanceof
+                     value="org.eclipse.core.resources.IFolder">
+               </instanceof>
+            </or>
+         </triggerPoints>
+         <possibleChildren>
+            
+            <or>
+                <instanceof
+                  value="de.tum.ascodt.plugin.project.Project">
+                </instanceof>
+                <instanceof
+                     value="org.eclipse.core.resources.IFolder">
+                </instanceof>
+                <instanceof
+                  value="org.eclipse.core.resources.IFile">
+                </instanceof>
+            </or>
+         </possibleChildren>
+         <actionProvider
+               class="de.tum.ascodt.plugin.ui.navigator.ASCoDTActionProvider"
+               id="de.tum.ascodt.plugin.ui.navigator.ASCoDTActionProvider"
+               priority="normal">
+            <enablement>
+            </enablement>
+         </actionProvider>
+      </navigatorContent>
+      <commonWizard
+            menuGroupId="ASCoDT"
+            type="new"
+            wizardId="de.tum.ascodt.plugin.ui.wizards.NewProjectWizard">
+         <enablement></enablement>
+      </commonWizard>
+      <commonWizard
+            menuGroupId="ASCoDT"
+            type="new"
+            wizardId="de.tum.ascodt.plugin.ui.wizards.NewComponentWizard">
+         <enablement></enablement>
+      </commonWizard>
+      <commonWizard
+            menuGroupId="ASCoDT"
+            type="new"
+            wizardId="de.tum.ascodt.plugin.ui.wizards.NewWorkbenchWizard">
+         <enablement></enablement>
+      </commonWizard>
+      <commonWizard
+            menuGroupId="ASCoDT"
+            type="new"
+            wizardId="de.tum.ascodt.plugin.ui.wizards.NewComponentUIWizard">
+         <enablement></enablement>
+      </commonWizard>
+   </extension>
+   <extension
+         id="de.tum.ascodt.plugin.ui.navigator.ASCoDTViewerContentBinding"
+         name="ASCoDT ViewerContentBinding"
+         point="org.eclipse.ui.navigator.viewer">
+         
+      <viewerContentBinding
+            viewerId="de.tum.ascodt.plugin.ui.views.ASCoDTNavigator">
+         <includes>
+           <contentExtension pattern="de.tum.ascodt.plugin.ui.navigator.ASCoDTContent"/>
+           <contentExtension
+          pattern="de.tum.ascodt.plugin.ui.navigator.ASCoDTNavigatorLinkHelper"/>
+         </includes>
+      </viewerContentBinding>
+      <viewerActionBinding viewerId="de.tum.ascodt.plugin.ui.views.ASCoDTNavigator">
+         <includes>
+            <actionExtension pattern="de.tum.ascodt.plugin.ui.navigator.ASCoDTActionProvider"/>
+         </includes>
+      </viewerActionBinding>
+      <viewer
+            viewerId="de.tum.ascodt.plugin.ui.views.ASCoDTNavigator">
+            <popupMenu
+                allowsPlatformContributions="true"
+                id="de.tum.ascodt.plugin.ui.views.ASCoDTNavigator#PopupMenu">  
+             <insertionPoint name="group.new"/>
+             </popupMenu>
+      </viewer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.linkHelper">
+      <linkHelper
+            class="de.tum.ascodt.plugin.ui.navigator.ASCoDTNavigatorLinkHelper"
+            id="de.tum.ascodt.plugin.ui.navigator.ASCoDTNavigatorLinkHelper">
+         <editorInputEnablement>
+            <instanceof
+                  value="org.eclipse.core.resources.IFile">
+            </instanceof>
+         </editorInputEnablement>
+         <selectionEnablement>
+            <instanceof
+                  value="org.eclipse.core.resources.IFile">
+            </instanceof>
+         </selectionEnablement>
+      </linkHelper>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="de.tum.ascodt.plugin.ui.editors.sidl.SIDLEditor"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            default="false"
+            extensions="sidl"
+            id="de.tum.ascodt.plugin.ui.editors.sidl.SIDLEditor"
+            name="SIDL Editor">
+      </editor>
+      <editor
+            class="de.tum.ascodt.plugin.ui.editors.gef.WorkbenchEditor"
+            default="true"
+            extensions="workbench"
+            id="de.tum.ascodt.plugin.ui.editors.gef.WorkbenchEditor"
+            name="ASCoDT Workbench">
+      </editor>
+   </extension>
+   <extension
+         id="de.tum.ascodt.plugin.project.builders.ProjectBuilder"
+         name="ASCoDT Project Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            callOnEmptyDelta="false"
+            hasNature="true"
+            isConfigurable="true">
+         <run
+               class="de.tum.ascodt.plugin.project.builders.ProjectBuilder">
+         </run>
+      </builder>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="org.eclipse.ui.category.project"
+            defaultHandler="de.tum.ascodt.plugin.core.commands.BuildComponentsHandler"
+            id="de.tum.ascodt.plugin.core.commands.BuildComponents"
+            name="Build Components">
+         <defaultHandler
+               class="de.tum.ascodt.plugin.core.commands.BuildComponentsHandler">
+            <parameter
+                  name="ASCoDTKernel.parameter1"
+                  value="ASCoDTKernel.parameter1">
+            </parameter>
+         </defaultHandler>
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <menu
+               id="project"
+               label="Project">
+            <command
+                  commandId="de.tum.ascodt.plugin.core.commands.BuildComponents"
+                  label="Build Components"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="true">
+                  <reference
+                        definitionId="de.tum.ascodt.plugin.project.Definition">
+                  </reference>
+               </visibleWhen>
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.definitions">
+      <definition
+            id="de.tum.ascodt.plugin.project.Definition">
+         <with
+               variable="selection">
+            <iterate
+                  ifEmpty="false"
+                  operator="or">
+               <adapt
+                     type="org.eclipse.core.resources.IResource">
+                  <test
+                        forcePluginActivation="true"
+                        property="de.tum.ascodt.plugin.project.natures.NaturePropertyTest"
+                        value="de.tum.ascodt.plugin.project.natures.ASCoDTNature">
+                  </test>
+               </adapt>
+            </iterate>
+         </with>
+      </definition>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+            class="de.tum.ascodt.plugin.project.natures.NaturePropertyTest"
+            id="de.tum.ascodt.plugin.plugin.project.NaturePropertyTest"
+            namespace="de.tum.ascodt.plugin.project.natures"
+            properties="NaturePropertyTest"
+            type="org.eclipse.core.resources.IResource">
+      </propertyTester>
+   </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            class="de.tum.ascodt.plugin.ui.ASCoDTBuilderPropertyPage"
+            id="de.tum.ascodt.plugin.ui.ASCoDTBuilderPropertyPage"
+            name="ASCoDT Compiler">
+      </page>
+   </extension>
+   
+   
+</plugin>

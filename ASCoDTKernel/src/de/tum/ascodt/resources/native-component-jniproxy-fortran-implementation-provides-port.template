@@ -1,0 +1,11 @@
+
+extern "C" {
+     void __COMPONENT_NAME___fproxy___F_OPERATION_NAME___(void*& ref__OPERATION_PARAMETERS_LIST_C2F__);
+}
+
+JNIEXPORT void JNICALL Java___JNI_FULL_QUALIFIED_NAME__JavaNativeImplementation___OPERATION_NAME__(JNIEnv *env, jobject obj,jlong ref__OPERATION_PARAMETERS_LIST__){
+  __START_METHOD_CALL__
+  void* cref = (void*) ref;
+  __COMPONENT_NAME___fproxy___F_OPERATION_NAME___(cref__FUNCTION_CALL_PARAMETERS_LIST__);
+  __END_METHOD_CALL__
+}

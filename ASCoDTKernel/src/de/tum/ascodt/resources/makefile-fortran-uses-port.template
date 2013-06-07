@@ -1,0 +1,31 @@
+SRCS_LIB += components/java/__USES_PORT_PATH__Native2JavaPlainPort.cpp 
+SRCS_LIB += components/java/__USES_PORT_PATH__Native2NativePlainPort.cpp
+SRCS_LIB += components/java/__USES_PORT_PATH__Cxx2SocketPlainPort.cpp
+SRCS_LIB += components/java/__USES_PORT_PATH__C2CxxSocketPlainPort.cpp
+SRCS_LIB += components/java/__USES_PORT_PATH__2SocketPlainPort.f90
+SRCS_LIB += components/java/__USES_PORT_PATH__2SocketPlainPortProxy.f90
+SRCS_LIB += components/java/__USES_PORT_PATH__NativeDispatcher.cpp
+SRCS_LIB += components/java/__USES_PORT_PATH__NativeSocketDispatcher.cpp
+SRCS_LIB += components/java/__USES_PORT_PATH__CProxyNativeSocketDispatcher.cpp
+SRCS_LIB += components/java/__USES_PORT_PATH__FNativeSocketDispatcher.f90
+SRCS_LIB += components/java/__USES_PORT_PATH__FProxyNativeSocketDispatcher.f90
+SRCS_EXEC += components/java/__USES_PORT_PATH__Native2JavaPlainPort.cpp 
+SRCS_EXEC += components/java/__USES_PORT_PATH__Native2NativePlainPort.cpp
+SRCS_EXEC += components/java/__USES_PORT_PATH__Cxx2SocketPlainPort.cpp
+SRCS_EXEC += components/java/__USES_PORT_PATH__C2CxxSocketPlainPort.cpp 
+SRCS_EXEC += components/java/__USES_PORT_PATH__NativeDispatcher.cpp
+SRCS_EXEC += components/java/__USES_PORT_PATH__NativeSocketDispatcher.cpp
+SRCS_EXEC += components/java/__USES_PORT_PATH__CProxyNativeSocketDispatcher.cpp
+SRCS_EXEC += components/java/__USES_PORT_PATH__2SocketPlainPort.f90
+SRCS_EXEC += components/java/__USES_PORT_PATH__2SocketPlainPortProxy.f90
+SRCS_EXEC += components/java/__USES_PORT_PATH__FNativeSocketDispatcher.f90
+SRCS_EXEC += components/java/__USES_PORT_PATH__FProxyNativeSocketDispatcher.f90
+
+components/java/__USES_PORT_PATH__FProxyNativeSocketDispatcher.o : components/java/__USES_PORT_PATH__FProxyNativeSocketDispatcher.f90
+__TAB__$(FC) $(FCFLAGS) -c -o components/java/__USES_PORT_PATH__FProxyNativeSocketDispatcher.o components/java/__USES_PORT_PATH__FProxyNativeSocketDispatcher.f90
+components/java/__USES_PORT_PATH__FNativeSocketDispatcher.o : components/java/__USES_PORT_PATH__FNativeSocketDispatcher.f90
+__TAB__$(FC) $(FCFLAGS) -c -o components/java/__USES_PORT_PATH__FNativeSocketDispatcher.o components/java/__USES_PORT_PATH__FNativeSocketDispatcher.f90
+components/java/__USES_PORT_PATH__2SocketPlainPort.o : components/java/__USES_PORT_PATH__2SocketPlainPort.f90
+__TAB__$(FC) $(FCFLAGS) -c -o components/java/__USES_PORT_PATH__2SocketPlainPort.o components/java/__USES_PORT_PATH__2SocketPlainPort.f90
+components/java/__USES_PORT_PATH__2SocketPlainPortProxy.o : components/java/__USES_PORT_PATH__2SocketPlainPortProxy.f90
+__TAB__$(FC) $(FCFLAGS) -c -o components/java/__USES_PORT_PATH__2SocketPlainPortProxy.o components/java/__USES_PORT_PATH__2SocketPlainPortProxy.f90     

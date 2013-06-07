@@ -1,0 +1,19 @@
+#ifndef __INCLUDE_GUARD_FULL_QUALIFIED_NAME__JNIPROXY_H_ 
+#define __INCLUDE_GUARD_FULL_QUALIFIED_NAME__JNIPROXY_H_ 
+#include <map>
+#include <string>
+#ifdef __cplusplus
+  extern "C" {
+#endif
+
+#include "jni.h"
+          
+JNIEXPORT void JNICALL Java___JNI_FULL_QUALIFIED_NAME__AbstractJavaNativeImplementation_createInstance(JNIEnv *env, jobject obj);
+JNIEXPORT void JNICALL Java___JNI_FULL_QUALIFIED_NAME__AbstractJavaNativeImplementation_destroyInstance(JNIEnv *env, jobject obj,jlong ref);
+-- INSERT HERE --
+
+#ifdef __cplusplus
+  }
+#endif
+
+#endif

@@ -1,0 +1,34 @@
+#ifndef __INCLUDE_GUARD_FULL_QUALIFIED_NAME__CXX2SOCKETPLAINPORT_H_
+#define __INCLUDE_GUARD_FULL_QUALIFIED_NAME__CXX2SOCKETPLAINPORT_H_ 
+
+#include "__PATH_FULL_QUALIFIED_NAME__.h"
+#include <iostream>
+#include <string>
+
+__OPEN_PACKAGE__
+     class __PORT_NAME__Cxx2SocketPlainPort;
+__CLOSE_PACKAGE__
+
+class __FULL_QUALIFIED_NAME__Cxx2SocketPlainPort: public __FULL_QUALIFIED_NAME__{
+  private:
+    int _sockfd;
+    int _newsockfd;
+    int _buffer_size;
+    char *_rcvBuffer;
+    char *_sendBuffer;
+    void open_client(char* hostname,int port,int &sockfd,int &newsockfd);
+    void open_server(int port,int &sockfd,int &newsockfd);
+    void sendData(char* data, size_t numberOfBytes, char* sendBuffer, int newsockfd,int bufferSize);
+    void readData(char* data,size_t size_of_data,char* readBuffer,int newsockfd, int bufferSize);
+    void close(int &sockfd,int &newsockfd);
+  public:
+    __PORT_NAME__Cxx2SocketPlainPort(char* host,int port,int buffer_size);
+     __PORT_NAME__Cxx2SocketPlainPort(int port,int buffer_size);
+    ~__PORT_NAME__Cxx2SocketPlainPort();
+    int getSockfd();
+    int getNewsockfd();
+    
+    -- INSERT HERE --
+};
+
+#endif

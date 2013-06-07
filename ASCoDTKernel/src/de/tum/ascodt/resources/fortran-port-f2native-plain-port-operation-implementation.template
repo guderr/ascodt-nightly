@@ -1,0 +1,7 @@
+subroutine __OPERATION_NAME__(this__OPERATION_PARAMETERS_LIST__)
+     use, intrinsic :: iso_c_binding
+     class(__PORT_NAME__2SocketPort)::this
+     __OPERATION_PARAMETERS_TYPES_LIST__
+     
+     call __C_FULL_QUALIFIED_NAME__c2socket_plain_port___OPERATION_NAME__(this%reference__FUNCTION_CALL_PARAMETERS_LIST__)
+end subroutine __OPERATION_NAME__

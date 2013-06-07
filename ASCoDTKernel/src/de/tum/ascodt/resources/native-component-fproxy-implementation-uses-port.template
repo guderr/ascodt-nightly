@@ -1,0 +1,43 @@
+
+subroutine __COMPONENT_NAME___fproxy_create_client_port_for___USES_PORT_AS__(this,host,port,buffer_size)
+     Use __FULL_QUALIFIED_USES_PORT_TYPE__2SocketPort
+     Use, intrinsic :: iso_c_binding
+     integer(kind=c_long_long ),intent(inout) :: this
+     character(kind=c_char),dimension(*)::host
+     integer(kind=c_int),intent(in)::port
+     integer(kind=c_int),intent(in)::buffer_size
+     type(__USES_PORT_TYPE__2SocketPort ),allocatable :: port_pt 
+     allocate(port_pt)
+     call port_pt%create_port_client_instance_for_c(host,port,buffer_size)
+     this=port_pt%reference
+end subroutine __COMPONENT_NAME___fproxy_create_client_port_for___USES_PORT_AS__
+
+
+subroutine __COMPONENT_NAME___fproxy_connect_client_dispatcher___USES_PORT_AS__(this,dispatcher,host,port,buffer_size)
+     Use __FULL_QUALIFIED_NAME__Implementation
+     Use __FULL_QUALIFIED_USES_PORT_TYPE__FNativeSocketDispatcher
+     Use, intrinsic :: iso_c_binding
+     Type( c_ptr ),intent(in) :: this
+     integer(kind=c_long_long ),intent(inout)::dispatcher
+     character(kind=c_char),dimension(*),intent(in)::host
+     type(__USES_PORT_TYPE__NativeSocketDispatcher ),pointer :: new_dispatcher
+     type(__COMPONENT_NAME__Implementation),pointer::pt
+     integer(kind=c_int)::port
+     integer(kind=c_int)::buffer_size
+     allocate(new_dispatcher)
+     call new_dispatcher%createClientDispatcherInstanceForC(host,port,buffer_size)
+     call c_f_pointer(this,pt)
+     call pt%connect___USES_PORT_AS__(new_dispatcher)
+     dispatcher=new_dispatcher%reference
+end subroutine __COMPONENT_NAME___fproxy_connect_client_dispatcher___USES_PORT_AS__
+
+
+subroutine __COMPONENT_NAME___fproxy_disconnect_client_dispatcher___USES_PORT_AS__(this,port)
+     Use __FULL_QUALIFIED_NAME__Implementation
+     Use __FULL_QUALIFIED_USES_PORT_TYPE__FNativeSocketDispatcher
+     Use, intrinsic :: iso_c_binding
+     Type( c_ptr ),intent(in) :: this
+     type(__COMPONENT_NAME__Implementation),pointer::pt
+     call c_f_pointer(this,pt)
+     call pt%disconnect___USES_PORT_AS__()
+end subroutine __COMPONENT_NAME___fproxy_disconnect_client_dispatcher___USES_PORT_AS__

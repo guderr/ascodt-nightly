@@ -1,0 +1,9 @@
+
+  public void __OPERATION_NAME__(__OPERATION_PARAMETERS_LIST__) {
+    if (_destination!=null) {
+      //_destination.lock();
+      _destination.__OPERATION_NAME__(__FUNCTION_CALL_PARAMETERS_LIST__);
+      //_destination.unlock();
+    }
+  }
+  

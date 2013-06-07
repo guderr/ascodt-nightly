@@ -1,0 +1,158 @@
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <assert.h>
+#include <algorithm>
+#include <iostream>
+#include <string.h>
+#include <arpa/inet.h>
+#include "__PATH_FULL_QUALIFIED_NAME__Cxx2SocketPlainPort.h"
+#include <fcntl.h>
+
+__FULL_QUALIFIED_NAME__Cxx2SocketPlainPort::__PORT_NAME__Cxx2SocketPlainPort(char* host,int port,int buffer_size):
+     _buffer_size(buffer_size){
+     _rcvBuffer=new char[_buffer_size];
+     _sendBuffer=new char[_buffer_size];
+     std::cout<<"open c client"<<host<<","<<port<<std::endl;
+     __FULL_QUALIFIED_NAME__Cxx2SocketPlainPort::open_client(host,port,_sockfd,_newsockfd);
+     
+}
+
+__FULL_QUALIFIED_NAME__Cxx2SocketPlainPort::__PORT_NAME__Cxx2SocketPlainPort(int port,int buffer_size):
+    _buffer_size(buffer_size){
+    _rcvBuffer=new char[_buffer_size];
+    _sendBuffer=new char[_buffer_size];
+    __FULL_QUALIFIED_NAME__Cxx2SocketPlainPort::open_server(port,_sockfd,_newsockfd);
+}
+
+__FULL_QUALIFIED_NAME__Cxx2SocketPlainPort::~__PORT_NAME__Cxx2SocketPlainPort(){
+     int method=-1;
+     sendData((char*)&method,sizeof(int),_sendBuffer,_newsockfd,_buffer_size);
+     
+     delete [] _rcvBuffer;
+     delete [] _sendBuffer;
+     
+     __FULL_QUALIFIED_NAME__Cxx2SocketPlainPort::close(_sockfd,_newsockfd);
+     
+}
+
+
+int __FULL_QUALIFIED_NAME__Cxx2SocketPlainPort::getSockfd(){
+     return _sockfd;
+}
+int __FULL_QUALIFIED_NAME__Cxx2SocketPlainPort::getNewsockfd(){
+     return _newsockfd;
+}
+
+void __FULL_QUALIFIED_NAME__Cxx2SocketPlainPort::open_client(char* hostname,int port,int &sockfd,int &newsockfd){
+          struct sockaddr_in serv_addr;
+          struct hostent *server;
+
+          sockfd = socket(AF_INET, SOCK_STREAM, 0);
+          assert(sockfd >= 0);
+          server = gethostbyname(hostname);
+          assert(server>=0);
+          bzero((char *) &serv_addr, sizeof(serv_addr));
+          serv_addr.sin_family = AF_INET;
+          bcopy((char *)server->h_addr,
+                    (char *)&serv_addr.sin_addr.s_addr,
+                    server->h_length);
+          serv_addr.sin_port = htons(port);
+          int tries=60;
+                while(tries>0){
+               if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) >= 0)
+                    break;
+                         tries--;
+               sleep(1);
+                }   
+         newsockfd=sockfd;
+        
+}
+
+void __FULL_QUALIFIED_NAME__Cxx2SocketPlainPort::open_server(int port,int &sockfd,int &newsockfd){
+          socklen_t clilen;
+
+          struct sockaddr_in serv_addr, cli_addr;
+
+          sockfd = socket(AF_INET, SOCK_STREAM, 0);
+          assert (sockfd>=0);
+
+          bzero((char *) &serv_addr, sizeof(serv_addr));
+          serv_addr.sin_family = AF_INET;
+          serv_addr.sin_addr.s_addr = INADDR_ANY;
+          serv_addr.sin_port = htons(port);
+          assert (bind(sockfd, (struct sockaddr *) &serv_addr,
+                    sizeof(serv_addr)) >= 0);
+          listen(sockfd,5);
+          clilen = sizeof(cli_addr);
+          newsockfd = accept(sockfd,
+                    (struct sockaddr *) &cli_addr,
+                    &clilen);
+          assert (newsockfd >= 0);
+}
+
+void __FULL_QUALIFIED_NAME__Cxx2SocketPlainPort::sendData(char* data, size_t numberOfBytes, char* sendBuffer, int newsockfd,int bufferSize){
+     char* data_ptr=(char*)data;
+     int remaining_bytes_to_send=0,total_send_bytes=0,send_bytes=0,n=0;
+
+     //clear buffer
+     bzero(sendBuffer,bufferSize);
+     while(total_send_bytes<numberOfBytes){
+          remaining_bytes_to_send=(numberOfBytes-send_bytes<=bufferSize)?numberOfBytes-send_bytes:bufferSize;
+          memcpy(sendBuffer,data_ptr,remaining_bytes_to_send);
+          send_bytes=0;
+          char* send_buffer_ptr=sendBuffer;
+          while(send_bytes<bufferSize){
+               n = write(newsockfd,send_buffer_ptr,bufferSize-send_bytes);
+               if(n>0){
+                    send_bytes+=n;
+                    send_buffer_ptr+=n;
+               }
+          }
+          total_send_bytes+=send_bytes;
+          data_ptr+=send_bytes;
+     }
+
+}
+
+
+void __FULL_QUALIFIED_NAME__Cxx2SocketPlainPort::readData(char* data,size_t size_of_data,char* readBuffer,int newsockfd, int bufferSize){
+          bzero(readBuffer,bufferSize);
+          int bytes_received=0;
+          int total_bytes_received=0;
+          int local_bytes_received=0;
+          int bytes_to_copy=0;
+          char* data_ptr=data;
+          char* buffer_ptr;
+
+          while(total_bytes_received<size_of_data){
+               bytes_received=0;
+               buffer_ptr=readBuffer;
+               while(bytes_received<bufferSize){
+                    local_bytes_received = read(newsockfd,buffer_ptr,bufferSize-bytes_received);
+                    if(local_bytes_received>0){
+                         bytes_received+=local_bytes_received;
+                         buffer_ptr+=local_bytes_received;
+                    }
+               }
+               bytes_to_copy=(total_bytes_received+bytes_received>size_of_data)?size_of_data-total_bytes_received:bytes_received;
+               memcpy(data_ptr,readBuffer,bytes_to_copy);
+               data_ptr+=bytes_to_copy;
+               total_bytes_received+=bytes_to_copy;
+          }
+
+}
+
+
+void __FULL_QUALIFIED_NAME__Cxx2SocketPlainPort::close(int &sockfd,int &newsockfd){
+     if(newsockfd>=0)
+         ::close(newsockfd);
+     if(sockfd>=0)
+         ::close(sockfd);
+}
+
+-- INSERT HERE --

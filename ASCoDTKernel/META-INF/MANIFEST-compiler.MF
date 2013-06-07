@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Class-Path: third-party-libs/jargs.jar
+Main-Class: de.tum.ascodt.sidlcompiler.Compiler

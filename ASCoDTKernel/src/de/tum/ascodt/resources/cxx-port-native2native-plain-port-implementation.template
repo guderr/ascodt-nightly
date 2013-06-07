@@ -1,0 +1,38 @@
+#include "__PATH_FULL_QUALIFIED_NAME__Native2NativePlainPort.h"
+#include <assert.h>
+
+
+JNIEXPORT void JNICALL Java___JNI_FULL_QUALIFIED_NAME__Native2NativePlainPort_createInstance(JNIEnv *env, jobject obj){
+  JavaVM* jvm;
+  env->GetJavaVM(&jvm);
+  
+  __FULL_QUALIFIED_NAME__Native2NativePlainPort *ref=new __FULL_QUALIFIED_NAME__Native2NativePlainPort();
+  
+  jfieldID id =env->GetFieldID(env->GetObjectClass(obj), "_ref", "J");
+  env->SetLongField(obj, id, (jlong)ref);
+    
+}
+
+JNIEXPORT void JNICALL Java___JNI_FULL_QUALIFIED_NAME__Native2NativePlainPort_destroyInstance(JNIEnv *env, jobject obj,jlong ref){
+  delete ((__FULL_QUALIFIED_NAME__Native2NativePlainPort*)ref);
+}
+
+JNIEXPORT void JNICALL Java___JNI_FULL_QUALIFIED_NAME__Native2NativePlainPort_connect(JNIEnv *env, jobject obj,jlong ref,jlong destination){
+  ((__FULL_QUALIFIED_NAME__Native2NativePlainPort*)ref)->connect((__FULL_QUALIFIED_NAME__*)destination);
+}
+
+
+__FULL_QUALIFIED_NAME__Native2NativePlainPort::__PORT_NAME__Native2NativePlainPort():
+     _destination(0){
+
+}
+
+__FULL_QUALIFIED_NAME__Native2NativePlainPort::~__PORT_NAME__Native2NativePlainPort(){
+
+}
+
+void __FULL_QUALIFIED_NAME__Native2NativePlainPort::connect(__FULL_QUALIFIED_NAME__* destination){
+  _destination=destination;
+}
+-- INSERT HERE --
+

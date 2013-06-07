@@ -1,0 +1,38 @@
+#ifndef __INCLUDE_GUARD_FULL_QUALIFIED_NAME__NATIVE2NATIVEPLAINPORT_H_
+#define __INCLUDE_GUARD_FULL_QUALIFIED_NAME__NATIVE2NATIVEPLAINPORT_H_ 
+
+#include "__PATH_FULL_QUALIFIED_NAME__.h"
+#include <jni.h> 
+#include <iostream>
+
+#ifdef __cplusplus
+  extern "C" {
+#endif
+
+
+          
+JNIEXPORT void JNICALL Java___JNI_FULL_QUALIFIED_NAME__Native2NativePlainPort_createInstance(JNIEnv *env, jobject obj);
+JNIEXPORT void JNICALL Java___JNI_FULL_QUALIFIED_NAME__Native2NativePlainPort_destroyInstance(JNIEnv *env, jobject obj,jlong ref);
+JNIEXPORT void JNICALL Java___JNI_FULL_QUALIFIED_NAME__Native2NativePlainPort_connect(JNIEnv *env, jobject obj,jlong ref,jlong destination);
+
+
+#ifdef __cplusplus
+  }
+#endif
+
+__OPEN_PACKAGE__
+     class __PORT_NAME__Native2NativePlainPort;
+__CLOSE_PACKAGE__
+
+class __FULL_QUALIFIED_NAME__Native2NativePlainPort: public __FULL_QUALIFIED_NAME__{
+  private:
+    __FULL_QUALIFIED_NAME__* _destination;
+  public:
+    __PORT_NAME__Native2NativePlainPort();
+    ~__PORT_NAME__Native2NativePlainPort();
+    
+    void connect(__FULL_QUALIFIED_NAME__*);
+    -- INSERT HERE --
+};
+
+#endif

@@ -1,0 +1,14 @@
+
+  public void __OPERATION_NAME__(__OPERATION_PARAMETERS_LIST__){
+    //__SWITCH_SYNC_ASYNC__
+     int methodId=__OPERATION_ID__;
+     try {
+          System.out.println("invoking:"+methodId);
+          sendIntData(methodId);
+          __SOCKET_PUSH__
+          __SOCKET_PULL__  
+     }catch(Exception e){
+         de.tum.ascodt.plugin.utils.exceptions.ErrorWriterDevice.getInstance().showError( getClass().getName() , "__OPERATION_NAME__()", e); 
+     }
+  }
+  

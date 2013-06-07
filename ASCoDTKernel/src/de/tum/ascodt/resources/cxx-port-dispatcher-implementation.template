@@ -1,0 +1,53 @@
+#include "__PATH_FULL_QUALIFIED_NAME__NativeDispatcher.h"
+#include <algorithm>
+
+JNIEXPORT void JNICALL Java___JNI_FULL_QUALIFIED_NAME__NativeDispatcher_createInstance(JNIEnv *env, jobject obj){
+  JavaVM* jvm;
+  env->GetJavaVM(&jvm);
+  
+  __FULL_QUALIFIED_NAME__NativeDispatcher *ref=new __FULL_QUALIFIED_NAME__NativeDispatcher();
+  
+  jfieldID id =env->GetFieldID(env->GetObjectClass(obj), "_ref", "J");
+  env->SetLongField(obj, id, (jlong)ref);
+    
+}
+
+JNIEXPORT void JNICALL Java___JNI_FULL_QUALIFIED_NAME__NativeDispatcher_destroyInstance(JNIEnv *env, jobject obj,jlong ref){
+  delete ((__FULL_QUALIFIED_NAME__NativeDispatcher*)ref);
+}
+
+JNIEXPORT void JNICALL Java___JNI_FULL_QUALIFIED_NAME__NativeDispatcher_connect(JNIEnv *env, jobject obj,jlong ref,jlong destination){
+  ((__FULL_QUALIFIED_NAME__NativeDispatcher*)ref)->connect((__FULL_QUALIFIED_NAME__*)destination);
+}
+
+JNIEXPORT void JNICALL Java___JNI_FULL_QUALIFIED_NAME__NativeDispatcher_disconnect(JNIEnv *env, jobject obj,jlong ref,jlong destination){
+  ((__FULL_QUALIFIED_NAME__NativeDispatcher*)ref)->disconnect((__FULL_QUALIFIED_NAME__*)destination);
+}
+
+
+__FULL_QUALIFIED_NAME__NativeDispatcher::__PORT_NAME__NativeDispatcher(){
+
+}
+
+__FULL_QUALIFIED_NAME__NativeDispatcher::~__PORT_NAME__NativeDispatcher(){
+
+}
+
+void __FULL_QUALIFIED_NAME__NativeDispatcher::connect(__FULL_QUALIFIED_NAME__* destination){
+  if(std::find(_destinations.begin(), _destinations.end(), destination)==_destinations.end())
+     _destinations.push_back(destination);
+}
+
+void __FULL_QUALIFIED_NAME__NativeDispatcher::disconnect(__FULL_QUALIFIED_NAME__* destination){
+  std::vector<__FULL_QUALIFIED_NAME__*>::iterator iter=std::find(_destinations.begin(), _destinations.end(), destination);
+  if(iter!=_destinations.end())
+     _destinations.erase(iter);
+}
+
+bool __FULL_QUALIFIED_NAME__NativeDispatcher::isConnected() const{
+  return !_destinations.empty();
+}
+
+
+-- INSERT HERE --
+

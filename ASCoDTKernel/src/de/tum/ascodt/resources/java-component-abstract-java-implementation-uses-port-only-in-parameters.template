@@ -1,0 +1,51 @@
+
+  /**
+   * Uses port
+   */
+  private __USES_PORT_TYPE__Dispatcher   _usesPort__USES_PORT_AS__ = new java.util.HashSet< __USES_PORT_TYPE__ >();
+  
+    
+  /**
+   * @see Case class 
+   */
+  public void connect__USES_PORT_AS__(__USES_PORT_TYPE__  port) throws de.tum.ascodt.utils.exceptions.ASCoDTException {
+    assert(_isLocked);
+    assert( port!=null);
+    if (_usesPort__USES_PORT_AS__.contains(port) ) {
+      throw new de.tum.ascodt.utils.exceptions.ASCoDTException( getClass().getName(), "connect__USES_PORT_AS__(...)", "tried to connect one uses port several times", null );
+    }
+    else {
+      _usesPort__USES_PORT_AS__.add( port );
+    }
+  }
+  
+  
+  /**
+   * @see Case class 
+   */
+  public __USES_PORT_TYPE__AbstractPort createPortFor__USES_PORT_AS__(de.tum.ascodt.repository.Target  target) {
+    __USES_PORT_TYPE__AbstractPort result = null;
+        
+    if (target.getType()==de.tum.ascodt.repository.Target.TargetType.JavaLocal) {
+      result = new __USES_PORT_TYPE__PlainJavaPort();
+    } 
+    assert(result!=null);
+    
+    return result;
+  }
+  
+
+  /**
+   * @see Case class 
+   */
+  public void disconnect__USES_PORT_AS__(__USES_PORT_TYPE__  port) throws de.tum.ascodt.utils.exceptions.ASCoDTException {
+    assert(_isLocked);
+    assert(port!=null);
+    if ( !_usesPort__USES_PORT_AS__.contains(port) ) {
+      throw new de.tum.ascodt.utils.exceptions.ASCoDTException( getClass().getName(), "disconnect__USES_PORT_AS__(...)", "tried to disconnect uses port that has not been connected before", null );
+    }
+    _usesPort__USES_PORT_AS__.remove(port);
+  }
+  
+  
+

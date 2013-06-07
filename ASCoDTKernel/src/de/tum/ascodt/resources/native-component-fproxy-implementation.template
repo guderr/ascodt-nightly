@@ -1,0 +1,20 @@
+subroutine __COMPONENT_NAME___fproxy_createInstance(this)
+     Use __FULL_QUALIFIED_NAME__Implementation
+     Use, intrinsic :: iso_c_binding
+     Type( c_ptr ),intent(inout) :: this
+     allocate(__COMPONENT_NAME___instance)
+     call __COMPONENT_NAME___instance%createInstance()
+     this=c_loc(__COMPONENT_NAME___instance)
+end subroutine __COMPONENT_NAME___fproxy_createInstance
+
+subroutine __COMPONENT_NAME___fproxy_destroyInstance(this)
+     Use __FULL_QUALIFIED_NAME__Implementation
+     Use, intrinsic :: iso_c_binding
+     Type( c_ptr ),intent(in) :: this
+     type( __COMPONENT_NAME__Implementation ),pointer :: pt
+     call c_f_pointer(this,pt)
+     call pt%destroyInstance()
+     deallocate(pt)
+end subroutine __COMPONENT_NAME___fproxy_destroyInstance
+
+-- INSERT HERE --

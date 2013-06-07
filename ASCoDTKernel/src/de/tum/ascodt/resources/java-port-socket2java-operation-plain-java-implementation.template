@@ -1,0 +1,14 @@
+
+  public void invoke___OPERATION_NAME__() throws java.io.IOException,java.lang.InterruptedException,java.util.concurrent.ExecutionException{
+     __SOCKET_PULL__
+     __OPERATION_NAME__(__FUNCTION_CALL_PARAMETERS_LIST__);
+     __SOCKET_PUSH__
+  }
+  public void __OPERATION_NAME__(__OPERATION_PARAMETERS_LIST__) {
+     if (_destination!=null) {
+      //_destination.lock();
+      _destination.__OPERATION_NAME__(__FUNCTION_CALL_PARAMETERS_LIST__);
+      //_destination.unlock();
+    }
+  }
+  

@@ -1,0 +1,5 @@
+subroutine  __C_FULL_QUALIFIED_NAME__c2socket_plain_port___OPERATION_NAME__(self__OPERATION_PARAMETERS_LIST__) bind(c)
+     use, intrinsic :: iso_c_binding
+     integer(kind=c_long_long)::self
+     __OPERATION_PARAMETERS_TYPES_LIST__
+end subroutine __C_FULL_QUALIFIED_NAME__c2socket_plain_port___OPERATION_NAME__

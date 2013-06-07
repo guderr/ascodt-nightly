@@ -1,0 +1,15 @@
+void __FULL_QUALIFIED_NAME__Native2JavaPlainPort::__OPERATION_NAME__(__OPERATION_PARAMETERS_LIST__){
+  JNIEnv* env;
+  int status=_jvm->GetEnv((void**)&env,JNI_VERSION_1_6);
+  //jfieldID pid =env->GetFieldID(env->GetObjectClass(_obj),_portIdentifier.c_str(), "L__PATH_FULL_QUALIFIED_NAME__Dispatcher;");
+  //jobject obj= env->GetObjectField(_obj,pid);
+  //jclass cls = env->FindClass("L__PATH_FULL_QUALIFIED_NAME__Dispatcher;");
+  jclass cls=env->GetObjectClass(_obj);
+  jmethodID mid = env->GetMethodID(cls,"__OPERATION_NAME__","(__JNI_OPERATION_PARAMETER_TYPES_LIST__)V");
+  
+  if(mid){
+     __START_METHOD_CALL__
+     env->CallVoidMethod(_obj,mid__FUNCTION_CALL_PARAMETERS_LIST__);
+     __END_METHOD_CALL__
+  }
+}

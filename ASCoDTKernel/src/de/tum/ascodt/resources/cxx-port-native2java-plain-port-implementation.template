@@ -1,0 +1,32 @@
+#include "__PATH_FULL_QUALIFIED_NAME__Native2JavaPlainPort.h"
+
+JNIEXPORT void JNICALL Java___JNI_FULL_QUALIFIED_NAME__Native2JavaPlainPort_createInstance(JNIEnv *env, jobject obj){
+  JavaVM* jvm;
+  env->GetJavaVM(&jvm);
+  jobject self=env->NewGlobalRef(obj);
+  
+  __FULL_QUALIFIED_NAME__Native2JavaPlainPort *ref=new __FULL_QUALIFIED_NAME__Native2JavaPlainPort(jvm,self);
+  
+  jfieldID id =env->GetFieldID(env->GetObjectClass(obj), "_ref", "J");
+  env->SetLongField(obj, id, (jlong)ref);
+  
+}
+
+JNIEXPORT void JNICALL Java___JNI_FULL_QUALIFIED_NAME__Native2JavaPlainPort_destroyInstance(JNIEnv *env, jobject obj,jlong ref){
+  delete ((__FULL_QUALIFIED_NAME__Native2JavaPlainPort*)ref);
+  
+}
+
+__FULL_QUALIFIED_NAME__Native2JavaPlainPort::__PORT_NAME__Native2JavaPlainPort(JavaVM* jvm,jobject obj):
+     _jvm(jvm),
+     _obj(obj){
+
+}
+
+__FULL_QUALIFIED_NAME__Native2JavaPlainPort::~__PORT_NAME__Native2JavaPlainPort(){
+  JNIEnv* env;
+  _jvm->GetEnv((void**)&env,JNI_VERSION_1_6);
+  env->DeleteGlobalRef(_obj);
+}
+
+-- INSERT HERE --

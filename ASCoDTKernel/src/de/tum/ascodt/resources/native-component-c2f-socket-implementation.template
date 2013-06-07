@@ -1,0 +1,205 @@
+//#include "__PATH_FULL_QUALIFIED_NAME__JNIProxy.h"
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <assert.h>
+#include <algorithm>
+#include <iostream>
+#include <string.h>
+#include <arpa/inet.h>
+extern "C" {
+ 
+     void __COMPONENT_NAME___fproxy_createinstance_(void** self);
+     void __COMPONENT_NAME___fproxy_destroyinstance_(void** &self);
+     
+} 
+
+void open_client(const char* hostname,int port,int &sockfd,int &newsockfd){
+          struct sockaddr_in serv_addr;
+          struct hostent *server;
+
+          sockfd = socket(AF_INET, SOCK_STREAM, 0);
+          assert(sockfd >= 0);
+          server = gethostbyname(hostname);
+          assert(server>=0);
+          bzero((char *) &serv_addr, sizeof(serv_addr));
+          serv_addr.sin_family = AF_INET;
+          bcopy((char *)server->h_addr,
+                    (char *)&serv_addr.sin_addr.s_addr,
+                    server->h_length);
+          serv_addr.sin_port = htons(port);
+          int tries=60;
+                while(tries>0){
+               if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) >= 0)
+                    break;
+                         tries--;
+               sleep(1);
+                }   
+         newsockfd=sockfd;
+}
+
+void open_server(int port,int &sockfd,int &newsockfd){
+          socklen_t clilen;
+
+          struct sockaddr_in serv_addr, cli_addr;
+
+          sockfd = socket(AF_INET, SOCK_STREAM, 0);
+          assert (sockfd>=0);
+
+          bzero((char *) &serv_addr, sizeof(serv_addr));
+          serv_addr.sin_family = AF_INET;
+          serv_addr.sin_addr.s_addr = INADDR_ANY;
+          serv_addr.sin_port = htons(port);
+          assert (bind(sockfd, (struct sockaddr *) &serv_addr,
+                    sizeof(serv_addr)) >= 0);
+          listen(sockfd,5);
+          clilen = sizeof(cli_addr);
+          newsockfd = accept(sockfd,
+                    (struct sockaddr *) &cli_addr,
+                    &clilen);
+          assert (newsockfd >= 0);
+}
+
+
+void sendData(char* data, size_t numberOfBytes, char* sendBuffer, int newsockfd,int bufferSize){
+     char* data_ptr=(char*)data;
+     int remaining_bytes_to_send=0,total_send_bytes=0,send_bytes=0,n=0;
+
+     //clear buffer
+     bzero(sendBuffer,bufferSize);
+     while(total_send_bytes<numberOfBytes){
+          remaining_bytes_to_send=(numberOfBytes-send_bytes<=bufferSize)?numberOfBytes-send_bytes:bufferSize;
+          memcpy(sendBuffer,data_ptr,remaining_bytes_to_send);
+          send_bytes=0;
+          char* send_buffer_ptr=sendBuffer;
+          while(send_bytes<bufferSize){
+               n = write(newsockfd,send_buffer_ptr,bufferSize-send_bytes);
+               if(n>0){
+                    send_bytes+=n;
+                    send_buffer_ptr+=n;
+               }
+          }
+          total_send_bytes+=send_bytes;
+          data_ptr+=send_bytes;
+     }
+
+}
+
+
+void readData(char* data,size_t size_of_data,char* readBuffer,int newsockfd, int bufferSize){
+          bzero(readBuffer,bufferSize);
+          int bytes_received=0;
+          int total_bytes_received=0;
+          int local_bytes_received=0;
+          int bytes_to_copy=0;
+          char* data_ptr=data;
+          char* buffer_ptr;
+
+          while(total_bytes_received<size_of_data){
+               bytes_received=0;
+               buffer_ptr=readBuffer;
+               while(bytes_received<bufferSize){
+                    local_bytes_received = read(newsockfd,buffer_ptr,bufferSize-bytes_received);
+                    if(local_bytes_received>0){
+                         bytes_received+=local_bytes_received;
+                         buffer_ptr+=local_bytes_received;
+                    }
+               }
+               bytes_to_copy=(total_bytes_received+bytes_received>size_of_data)?size_of_data-total_bytes_received:bytes_received;
+               memcpy(data_ptr,readBuffer,bytes_to_copy);
+               data_ptr+=bytes_to_copy;
+               total_bytes_received+=bytes_to_copy;
+          }
+
+}
+
+void invoker_create_instance(void** ref,int,int,int,char*,char*){
+     __COMPONENT_NAME___fproxy_createinstance_(ref);
+  
+}
+
+void invoker_destroy_instance(void** ref,int,int,int,char*,char*){
+     __COMPONENT_NAME___fproxy_destroyinstance_(ref);
+  
+}
+-- INSERT HERE --
+
+void close(int &sockfd,int &newsockfd){
+     if(newsockfd>=0)
+         close(newsockfd);
+     if(sockfd>=0)
+         close(sockfd);
+}
+
+extern "C"{
+void socket_client_loop_(){
+  void* ref=NULL;
+  int sockfd=-1,newsockfd=-1;
+  int methodId=0;
+  int bufferSize=1024;
+  char* hostname;
+  char* port_str;
+  hostname=getenv("__COMPONENT_NAME_ENV___HOSTNAME");
+  
+  port_str=getenv("__COMPONENT_NAME_ENV___PORT");
+  char *sendBuffer=new char[bufferSize];
+  char *rcvBuffer=new char[bufferSize];
+  void (*invokers[__CLIENT_METHODS__])(void**,int,int,int,char*,char*);
+  invokers[0]=invoker_create_instance;
+  invokers[1]=invoker_destroy_instance;
+  __SET_CLIENT_INVOKERS__
+  open_client(hostname,atoi(port_str),sockfd,newsockfd);
+  
+  
+  invokers[0](&ref,sockfd,newsockfd,bufferSize,rcvBuffer,sendBuffer);
+  while(methodId!=1){
+     readData((char*)&methodId,sizeof(int),rcvBuffer,newsockfd,bufferSize);
+     std::cout<<"method_client:"<<methodId<<std::endl;
+     invokers[methodId](&ref,sockfd,newsockfd,bufferSize,rcvBuffer,sendBuffer);
+     
+  }
+  close(sockfd,newsockfd);   
+     
+
+
+  delete [] sendBuffer;
+  delete [] rcvBuffer;    
+}
+
+void socket_server_loop_(){
+  void* ref=NULL;
+  int sockfd=-1,newsockfd=-1;
+  int methodId=0;
+  int bufferSize=1024;
+  char *sendBuffer=new char[bufferSize];
+  char *rcvBuffer=new char[bufferSize];
+  char* port_str;
+  port_str=getenv("__COMPONENT_NAME_ENV___PORT");
+  void (*invokers[__SERVER_METHODS__])(void**,int,int,int,char*,char*);
+  invokers[0]=invoker_create_instance;
+  invokers[1]=invoker_destroy_instance;
+  __SET_SERVER_INVOKERS__
+  open_server(atoi(port_str),sockfd,newsockfd);
+  
+  
+  invokers[0](&ref,sockfd,newsockfd,bufferSize,rcvBuffer,sendBuffer);
+  while(methodId!=1){
+     readData((char*)&methodId,sizeof(int),rcvBuffer,newsockfd,bufferSize);
+      std::cout<<"method_server:"<<methodId<<std::endl;
+     invokers[methodId](&ref,sockfd,newsockfd,bufferSize,rcvBuffer,sendBuffer);
+     
+  }
+  close(sockfd,newsockfd);   
+     
+
+
+  delete [] sendBuffer;
+  delete [] rcvBuffer;    
+}
+
+}
+

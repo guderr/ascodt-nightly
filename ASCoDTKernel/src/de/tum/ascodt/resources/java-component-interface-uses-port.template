@@ -1,0 +1,30 @@
+
+  /**
+   * Connect a uses port.
+   *
+   * @throws ASCoDTException If you connect the same object twice and if you 
+   *           try to connect to several ports even though 
+   *           mayConnectMultiplePortsTo__USES_PORT_AS__() returns false.
+   * @param port Valid port instance. Use factory method createPortFor__USES_PORT_AS__() to 
+   *           create port instances. 
+   */
+  void connect__USES_PORT_AS__(__USES_PORT_TYPE__  port) throws de.tum.ascodt.utils.exceptions.ASCoDTException;
+  
+  /**
+   * Create a port object for a given target. Each class is well aware of its 
+   * own target and thus can create the port that is best suited for it. If 
+   * the target is running remotely, e.g., and the destination target it the 
+   * same remote machine, both components can communicate directly and the 
+   * returned java port simply is a representant for this direct communication.
+   */
+  __USES_PORT_TYPE__ createPortFor__USES_PORT_AS__(de.tum.ascodt.repository.Target  target);
+  
+  /**
+   * Disconnect a port.
+   * 
+   * @throws ASCoDTException If the port has not been successfully connected to 
+   *            the component before. 
+   */
+  void disconnect__USES_PORT_AS__(__USES_PORT_TYPE__  port) throws de.tum.ascodt.utils.exceptions.ASCoDTException;
+  
+  //boolean mayConnectMultiplePortsTo__USES_PORT_AS__();

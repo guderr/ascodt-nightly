@@ -1,0 +1,18 @@
+
+subroutine connect___USES_PORT_AS__(this,dispatcher)
+     class(__COMPONENT_NAME__AbstractImplementation) :: this
+     type(__USES_PORT_TYPE__NativeSocketDispatcher) :: dispatcher
+     this%__USES_PORT_AS__=dispatcher
+     this%v_is_connected___USES_PORT_AS__ = .True.
+end subroutine connect___USES_PORT_AS__
+
+subroutine disconnect___USES_PORT_AS__(this)
+     class(__COMPONENT_NAME__AbstractImplementation) :: this
+     this%v_is_connected___USES_PORT_AS__ = .False.
+end subroutine disconnect___USES_PORT_AS__
+
+logical function is_connected___USES_PORT_AS__(this)
+     class(__COMPONENT_NAME__AbstractImplementation) :: this
+     is_connected___USES_PORT_AS__ = this%v_is_connected___USES_PORT_AS__
+     !nullify(this%__USES_PORT_AS__)
+end function is_connected___USES_PORT_AS__

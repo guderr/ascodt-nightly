@@ -1,0 +1,4 @@
+void __FULL_QUALIFIED_NAME__NativeDispatcher::__OPERATION_NAME__(__OPERATION_PARAMETERS_LIST__){
+    for(unsigned int i=0;i<_destinations.size();i++)
+          _destinations[i]->__OPERATION_NAME__(__FUNCTION_CALL_PARAMETERS_LIST__);
+}

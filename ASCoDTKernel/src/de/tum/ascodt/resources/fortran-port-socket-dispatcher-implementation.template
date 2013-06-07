@@ -1,0 +1,48 @@
+__OPEN_PACKAGE_____PORT_NAME__FNativeSocketDispatcher
+use, intrinsic :: iso_c_binding
+implicit none
+
+
+type, public :: __PORT_NAME__NativeSocketDispatcher
+     integer(kind=c_long_long )::reference
+     contains
+     procedure,public::createClientDispatcherInstanceForC
+     procedure,public::createClientDispatcherInstance
+     procedure,public::destroyDispatcherInstance
+     
+     
+     __OPERATIONS__
+end type __PORT_NAME__NativeSocketDispatcher
+contains
+subroutine createClientDispatcherInstanceForC(this,host,port,buffer_size)
+    class(__PORT_NAME__NativeSocketDispatcher)::this
+    character(kind=c_char),dimension(*)::host
+    integer(kind=c_int)::port
+    integer(kind=c_int)::buffer_size
+    this%reference=0
+    call __C_FULL_QUALIFIED_NAME___f2c_nsd_create_client_instance(this%reference,host,port,buffer_size)
+    
+    
+
+end subroutine createClientDispatcherInstanceForC
+
+subroutine createClientDispatcherInstance(this,host,port,buffer_size)
+    class(__PORT_NAME__NativeSocketDispatcher)::this
+    character(*)::host
+    integer::port
+    integer::buffer_size
+    call this%createClientDispatcherInstanceForC(host//c_null_char,port,buffer_size)
+    
+    
+
+end subroutine createClientDispatcherInstance
+
+subroutine destroyDispatcherInstance(this)
+     class(__PORT_NAME__NativeSocketDispatcher)::this
+     call __C_FULL_QUALIFIED_NAME___f2c_nsd_destroy_instance(this%reference)
+
+end subroutine destroyDispatcherInstance
+
+-- INSERT HERE --
+
+__CLOSE_PACKAGE_____PORT_NAME__FNativeSocketDispatcher

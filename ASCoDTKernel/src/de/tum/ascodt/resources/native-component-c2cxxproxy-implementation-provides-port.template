@@ -1,0 +1,9 @@
+
+
+void invoker___OPERATION_NAME__(void** ref,int sockfd,int newsockfd, int buffer_size,char* rcvBuffer, char* sendBuffer){
+  __SOCKET_PULL__
+  
+  ((__CXX_FULL_QUALIFIED_NAME__Implementation*) ref)->__OPERATION_NAME__(__FUNCTION_CALL_PARAMETERS_LIST__);
+  
+  __SOCKET_PUSH__
+}

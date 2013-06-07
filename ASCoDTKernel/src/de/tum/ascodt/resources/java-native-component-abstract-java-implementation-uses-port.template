@@ -1,0 +1,70 @@
+
+  /**
+   * Uses port
+   */
+  protected __USES_PORT_TYPE__NativeDispatcher ___USES_PORT_AS__ = null;
+  
+    
+  /**
+   * @see Case class 
+   */
+  public void connect__USES_PORT_AS__(__USES_PORT_TYPE__  port) throws de.tum.ascodt.utils.exceptions.ASCoDTException {
+    assert(_isLocked);
+    assert(port!=null);
+   
+    if(___USES_PORT_AS__==null){
+       ___USES_PORT_AS__ = new __USES_PORT_TYPE__NativeDispatcher();
+       connect__USES_PORT_AS__(_ref,___USES_PORT_AS__.getReference());
+    }
+    ___USES_PORT_AS__.connect(port);
+   
+  }
+  
+  private native void connect__USES_PORT_AS__(long ref,long portRef);
+  
+  /**
+   * @see Case class 
+   */
+  public __USES_PORT_TYPE__ createPortFor__USES_PORT_AS__(de.tum.ascodt.repository.Target  target) {
+    __USES_PORT_TYPE__ result = null;
+        
+    if (target.getType()==de.tum.ascodt.repository.Target.TargetType.JavaLocal) {
+      result = new __USES_PORT_TYPE__Native2JavaPlainPort();
+    }
+    if (target.getType()==de.tum.ascodt.repository.Target.TargetType.JavaNative) {
+      result = new __USES_PORT_TYPE__Native2NativePlainPort();
+    }
+    if (target.getType()==de.tum.ascodt.repository.Target.TargetType.FortranRemoteSocket) {
+      result = new __USES_PORT_TYPE__Native2SocketClientPlainPort();
+    }
+    /*if (target.getType() == de.tum.ascodt.repository.Target.TargetType.CxxRemoteSocket){
+      result = new __USES_PORT_TYPE__Cxx2CxxRemoteSocketPort();
+    }
+    if (target.getType() == de.tum.ascodt.repository.Target.TargetType.ReverseCxxRemoteSocket){
+      result = new __USES_PORT_TYPE__ReverseCxx2CxxRemoteSocketPort();
+    }*/  
+    assert(result!=null);
+    
+    return result;
+  }
+  
+
+  /**
+   * @see Case class 
+   */
+  public void disconnect__USES_PORT_AS__(__USES_PORT_TYPE__  port) throws de.tum.ascodt.utils.exceptions.ASCoDTException {
+    assert(_isLocked);
+    assert(port!=null);
+    if (___USES_PORT_AS__==null ) {
+      throw new de.tum.ascodt.utils.exceptions.ASCoDTException( getClass().getName(), "disconnect__USES_PORT_AS__(...)", "tried to disconnect uses port that has not been connected to any other port before", null );
+    }
+    
+    ___USES_PORT_AS__.disconnect(port);
+    
+    if(!___USES_PORT_AS__.isConnected()){
+      disconnect__USES_PORT_AS__(_ref);
+      ___USES_PORT_AS__ = null;
+    }
+  }
+  
+   private native void disconnect__USES_PORT_AS__(long ref);
