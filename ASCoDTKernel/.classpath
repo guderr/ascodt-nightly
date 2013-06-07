@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry excluding="de/tum/ascodt/sidlcompiler/model/AST2ComponentDescription.java" kind="src" path="src"/>
+	<classpathentry kind="src" path="third-party-libs"/>
+	<classpathentry exported="true" kind="lib" path="debug" sourcepath="debug"/>
+	<classpathentry kind="lib" path="third-party-libs/jargs.jar"/>
+	<classpathentry kind="lib" path="third-party-libs/swt.jar"/>
+	<classpathentry kind="output" path="debug"/>
+</classpath>
