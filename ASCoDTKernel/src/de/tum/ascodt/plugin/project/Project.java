@@ -423,9 +423,10 @@ public class Project {
 				createParentFolders(proxiesFolder);
 			if(!classOutputFolder.exists())
 				createParentFolders(classOutputFolder);
-			addClasspathSource("/"+sourcesFolder.getLocation().removeFirstSegments(_eclipseProjectHandle.getLocation().segmentCount()-1
+			
+			addClasspathSource(Path.ROOT+sourcesFolder.getLocation().removeFirstSegments(_eclipseProjectHandle.getLocation().segmentCount()-1
 					).toPortableString());
-			addClasspathSource("/"+proxiesFolder.getLocation().removeFirstSegments(_eclipseProjectHandle.getLocation().segmentCount()-1
+			addClasspathSource(Path.ROOT+proxiesFolder.getLocation().removeFirstSegments(_eclipseProjectHandle.getLocation().segmentCount()-1
 					).toPortableString());
 
 
@@ -661,6 +662,8 @@ public class Project {
 	 */
 	public void addClasspathSource( String entryPath) throws ASCoDTException {
 		try {
+			if(entryPath.contains(":"))
+				entryPath=entryPath.replaceFirst(entryPath.substring(entryPath.indexOf(":")-1,entryPath.indexOf(":")+1), "");
 			IJavaProject javaProject = JavaCore.create(_eclipseProjectHandle); 
 			Set<IClasspathEntry> entries = new HashSet<IClasspathEntry>();
 			for(IClasspathEntry classElement: Arrays.asList(javaProject.getRawClasspath())){
@@ -745,7 +748,7 @@ public class Project {
 
 			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 			if(compiler == null){
-				ErrorWriterDevice.getInstance().showError( getClass().getName(), "compileComponents()",  "Exclipse not executed via JDK", null );
+				ErrorWriterDevice.getInstance().showError( getClass().getName(), "compileComponents()",  "Exclipse not executed via JDK! Please change eclipse ini or Path env!", null );
 
 				return;
 			}
