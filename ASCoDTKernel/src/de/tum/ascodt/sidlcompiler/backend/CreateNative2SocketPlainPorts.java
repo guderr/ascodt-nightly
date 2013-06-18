@@ -169,6 +169,8 @@ public class CreateNative2SocketPlainPorts extends DepthFirstAdapter {
 		//_templateCFilesHeader.peek().addMapping("__PORT_NAME__", portName);
 		_templateCFilesHeader.peek().addMapping( "__INCLUDE_GUARD_C_FULL_QUALIFIED_NAME__",fullQualifiedPortName.replaceAll("[.]", "_").toUpperCase());
 		_templateCFilesHeader.peek().addMapping( "__C_FULL_QUALIFIED_NAME__",fullQualifiedPortName.replaceAll("[.]", "_").toLowerCase());
+
+		_templateCFilesHeader.peek().addMapping("__C_FULL_QUALIFIED_NAME_4WIN__",fullQualifiedPortName.replaceAll("[.]", "_").toUpperCase());
 		//_templateCFilesHeader.peek().addMapping( "__PATH_FULL_QUALIFIED_NAME__",fullQualifiedPortName.replaceAll("[.]", "/"));
 		
 	}
@@ -196,6 +198,9 @@ public class CreateNative2SocketPlainPorts extends DepthFirstAdapter {
 			String fullQualifiedPortName) {
 		//TODO static 
 		_templateCFilesImplementation.peek().addMapping( "__C_FULL_QUALIFIED_NAME__",fullQualifiedPortName.replaceAll("[.]", "_").toLowerCase());
+
+
+		_templateCFilesImplementation.peek().addMapping("__C_FULL_QUALIFIED_NAME_4WIN__",fullQualifiedPortName.replaceAll("[.]", "_").toUpperCase());
 		_templateCFilesImplementation.peek().addMapping( "__CXX_FULL_QUALIFIED_NAME__",fullQualifiedPortName.replaceAll("[.]", "::"));
 		_templateCFilesImplementation.peek().addMapping("__PORT_NAME__", portType);
 		_templateCFilesImplementation.peek().addMapping( "__PATH_FULL_QUALIFIED_NAME__",fullQualifiedPortName.replaceAll("[.]", "/"));
@@ -261,7 +266,7 @@ public class CreateNative2SocketPlainPorts extends DepthFirstAdapter {
 //
 			String templateCxxFileHeader = "cxx-port-native-operation-plain-header.template";
 			String templateCxxFileImplementation = "cxx-port-native2socket-operation-plain-implementation.template";
-			String templateCFileHeader = "c-port-native-operation-plain-header.template";
+			String templateCFileHeader = "c-port-native2socket-operation-plain-header.template";
 			String templateCFileImplementation = "c-port-native2socket-operation-plain-implementation.template";
 			String templateFPortOperationFileName = "fortran-port-f2native-plain-port-operation-implementation.template";
 			String templateFPortProxyOperationFileName = "fortran-port-f2native-proxy-plain-port-operation-implementation.template";
@@ -287,8 +292,10 @@ public class CreateNative2SocketPlainPorts extends DepthFirstAdapter {
 			templateFPortProxyOperation.addMapping("__OPERATION_PARAMETERS_LIST__",parameterList.getParameterListInF(true));
 			templateFPortProxyOperation.addMapping("__OPERATION_PARAMETERS_TYPES_LIST__", parameterList.getParameterListTypesForFCBindedToC(true));
 			templateFPortOperation.addMapping("__FUNCTION_CALL_PARAMETERS_LIST__", parameterList.getFunctionCallListInFClient(false));
+			 
 			
 			templateCOperationHeader.addMapping( "__OPERATION_NAME__" , node.getName().getText().toLowerCase() );
+			templateCOperationHeader.addMapping( "__OPERATION_NAME_4WIN__" , node.getName().getText().toUpperCase() );
 			String parameters=parameterList.getParameterListInF2Cxx();
 			if(!parameters.equals(""))
 				parameters=","+parameters;	
@@ -302,16 +309,24 @@ public class CreateNative2SocketPlainPorts extends DepthFirstAdapter {
 			String switchSyncAsync="";
 			if(pullOut.equals(""))
 			{
+				switchSyncAsync+="#ifdef _WIN32\n";
+				switchSyncAsync+="#else\n";
+						
 				switchSyncAsync+="int flags;\n";
 				switchSyncAsync+="flags = fcntl(_newsockfd, F_GETFL, 0);\n";
 				switchSyncAsync+="flags |= O_NONBLOCK;\n";
 				switchSyncAsync+="fcntl(_newsockfd, F_SETFL, flags);\n";
+				switchSyncAsync+="#endif\n";
+				
 				templateCxxImplementation.addMapping("__SWITCH_SYNC_ASYNC__",switchSyncAsync);
 			}else{
+				switchSyncAsync+="#ifdef _WIN32\n";
+				switchSyncAsync+="#else\n";
 				switchSyncAsync+="int flags;\n";
 				switchSyncAsync+="flags = fcntl(_newsockfd, F_GETFL, 0);\n";
 				switchSyncAsync+="flags ^= O_NONBLOCK;\n";
 				switchSyncAsync+="fcntl(_newsockfd, F_SETFL, flags);\n";
+				switchSyncAsync+="#endif\n";
 				templateCxxImplementation.addMapping("__SWITCH_SYNC_ASYNC__",switchSyncAsync);
 			}
 				
@@ -320,6 +335,8 @@ public class CreateNative2SocketPlainPorts extends DepthFirstAdapter {
 			templateCxxImplementation.addMapping("__SOCKET_PULL__", parameterList.pullOutFromSocketForCxx());
 			templateCImplementation.addMapping("__PREPARE__STRING_ARGS__",parameterList.convertCharsToString());
 			templateCImplementation.addMapping( "__OPERATION_NAME__" , node.getName().getText().toLowerCase());
+			templateCImplementation.addMapping( "__OPERATION_NAME_4WIN__" , node.getName().getText().toUpperCase());
+			
 			templateCImplementation.addMapping( "__CXX_OPERATION_NAME__", node.getName().getText());
 			templateCImplementation.addMapping( "__FUNCTION_CALL_PARAMETERS_LIST__" , parameterList.getFunctionCallListInF2Cxx());
 			templateCImplementation.addMapping( "__OPERATION_PARAMETERS_LIST__" , parameters);

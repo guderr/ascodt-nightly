@@ -33,7 +33,7 @@ public class ResourceManager {
 		if(Platform.getBundle(plugin)!=null){
 			if(FileLocator.find(Platform.getBundle(plugin), new Path("debug"),null)!=null)
 				hasBinFolder=true;
-			url = FileLocator.toFileURL(FileLocator.find(Platform.getBundle(plugin), new Path(((hasBinFolder)?"debug/":"")+pathToResource),null));
+			url = FileLocator.toFileURL(FileLocator.find(Platform.getBundle(plugin), new Path(((hasBinFolder)?"debug"+Path.SEPARATOR:"")+pathToResource),null));
 			
 		}
 		return url;

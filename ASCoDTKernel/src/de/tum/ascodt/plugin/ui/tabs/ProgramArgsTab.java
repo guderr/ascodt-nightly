@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 import org.eclipse.swt.SWT;
@@ -217,8 +218,16 @@ abstract class ProgramArgsTab extends ContainerTab{
 	public void execute() {
 		try {
 			String cmd=getCommandForExecution();
-			final Process p=Runtime.getRuntime().exec(cmd,getEnv());
-			onStart();
+			ProcessBuilder pb = new ProcessBuilder(cmd.split(" "));
+			Map<String, String> env = pb.environment();
+			if (env != null)
+				for(String envVar: getEnv()){
+					String[] envPair=envVar.split("=");
+					env.put(envPair[0],envPair[1]);
+				}
+			final Process p = pb.start();
+			
+			//final Process p=Runtime.getRuntime().exec(cmd,getEnv());
 			ExecutorService exService=java.util.concurrent.Executors.newCachedThreadPool();
 			exService.execute(new Runnable(){
 
@@ -256,6 +265,8 @@ abstract class ProgramArgsTab extends ContainerTab{
 				}
 				
 			});
+			onStart();
+			
 		
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block

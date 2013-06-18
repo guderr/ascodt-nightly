@@ -1,4 +1,4 @@
-subroutine __COMPONENT_NAME___fproxy_createInstance(this)
+subroutine __COMPONENT_NAME___fproxy_createInstance(this) bind(C)
      Use __FULL_QUALIFIED_NAME__Implementation
      Use, intrinsic :: iso_c_binding
      Type( c_ptr ),intent(inout) :: this
@@ -7,7 +7,7 @@ subroutine __COMPONENT_NAME___fproxy_createInstance(this)
      this=c_loc(__COMPONENT_NAME___instance)
 end subroutine __COMPONENT_NAME___fproxy_createInstance
 
-subroutine __COMPONENT_NAME___fproxy_destroyInstance(this)
+subroutine __COMPONENT_NAME___fproxy_destroyInstance(this) bind(C)
      Use __FULL_QUALIFIED_NAME__Implementation
      Use, intrinsic :: iso_c_binding
      Type( c_ptr ),intent(in) :: this

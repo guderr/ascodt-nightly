@@ -1,0 +1,6 @@
+#ifdef _WIN32
+void __C_FULL_QUALIFIED_NAME_4WIN__C2SOCKET_PLAIN_PORT___OPERATION_NAME_4WIN__(long long* ref__OPERATION_PARAMETERS_LIST__);
+
+#else
+void __C_FULL_QUALIFIED_NAME__c2socket_plain_port___OPERATION_NAME___(long long* ref__OPERATION_PARAMETERS_LIST__);
+#endif

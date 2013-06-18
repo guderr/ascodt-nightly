@@ -172,7 +172,8 @@ public class CreateNativePortInterface extends DepthFirstAdapter{
 		_templateFilesFortranSocketDispatcher.peek().addMapping("__PORT_NAME__", portName);
 		_templateFilesFortranSocketDispatcher.peek().addMapping("__C_FULL_QUALIFIED_NAME__",fullQualifiedName.replaceAll("[.]", "_").toLowerCase());
 		_templateFilesFortranProxy4SocketDispatcher.peek().addMapping("__C_FULL_QUALIFIED_NAME__",fullQualifiedName.replaceAll("[.]", "_").toLowerCase());
-	
+		_templateFilesCProxy4SocketDispatcher.peek().addMapping("__C_FULL_QUALIFIED_NAME_4WIN__",fullQualifiedName.replaceAll("[.]", "_").toUpperCase());
+		
 		_templateFilesCProxy4SocketDispatcher.peek().addMapping("__C_FULL_QUALIFIED_NAME__",fullQualifiedName.replaceAll("[.]", "_").toLowerCase());
 		_templateFilesCProxy4SocketDispatcher.peek().addMapping("__CXX_FULL_QUALIFIED_NAME__",fullQualifiedName.replaceAll("[.]", "::"));
 		_templateFilesCProxy4SocketDispatcher.peek().addMapping("__PATH_FULL_QUALIFIED_NAME__",fullQualifiedName.replaceAll("[.]", "/"));
@@ -326,6 +327,8 @@ public class CreateNativePortInterface extends DepthFirstAdapter{
 				parameters=","+parameters;	
 			templateCProxyOperation4DispatcherImplementation.addMapping("__PREPARE__STRING_ARGS__",parameterList.convertCharsToString());
 			templateCProxyOperation4DispatcherImplementation.addMapping( "__OPERATION_NAME__" , node.getName().getText().toLowerCase());
+			templateCProxyOperation4DispatcherImplementation.addMapping( "__OPERATION_NAME_4WIN__" , node.getName().getText().toUpperCase());
+			
 			templateCProxyOperation4DispatcherImplementation.addMapping( "__CXX_OPERATION_NAME__", node.getName().getText());
 			templateCProxyOperation4DispatcherImplementation.addMapping( "__FUNCTION_CALL_PARAMETERS_LIST__" , parameterList.getFunctionCallListInF2Cxx());
 			templateCProxyOperation4DispatcherImplementation.addMapping( "__OPERATION_PARAMETERS_LIST__" , parameters);

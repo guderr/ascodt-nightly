@@ -1,6 +1,11 @@
 
 extern "C" {
+  #ifdef _WIN32
+  void __COMPONENT_NAME___fproxy_create_client_port_for___USES_PORT_AS__(long long* usePort,char* host,int& port,int& bufferSize);
+  
+  #else
   void __COMPONENT_NAME___fproxy_create_client_port_for___USES_PORT_AS___(long long* usePort,char* host,int& port,int& bufferSize);
+  #endif
 }
 void invoker_create_client_port_for___USES_PORT_AS__(void** ref,int sockfd,int newsockfd, int buffer_size,char* rcvBuffer, char* sendBuffer){
   long long portref=0;
@@ -11,15 +16,24 @@ void invoker_create_client_port_for___USES_PORT_AS__(void** ref,int sockfd,int n
   host = new char[hostname_len];
   readData((char*)host,hostname_len,rcvBuffer,newsockfd,buffer_size);
   readData((char*)&port,sizeof(int),rcvBuffer,newsockfd,buffer_size);
-  __COMPONENT_NAME___fproxy_create_client_port_for___USES_PORT_AS___(&portref,host,port,buffer_size);
+  #ifdef _WIN32
+  __COMPONENT_NAME___fproxy_create_client_port_for___USES_PORT_AS__(&portref,host,port,buffer_size);
   
+  #else
+  __COMPONENT_NAME___fproxy_create_client_port_for___USES_PORT_AS___(&portref,host,port,buffer_size);
+  #endif
   
   sendData((char*)&portref,sizeof(long long),sendBuffer,newsockfd,buffer_size);
   std::cout<<"finished port conn:"<<host<<","<<port<<std::endl;
 }
   
 extern "C" {
+  #ifdef _WIN32
+  void __COMPONENT_NAME___fproxy_connect_client_dispatcher___USES_PORT_AS__(void** ref,long long* dispatcher,char* host,int& port,int& bufferSize);
+  
+  #else
   void __COMPONENT_NAME___fproxy_connect_client_dispatcher___USES_PORT_AS___(void** ref,long long* dispatcher,char* host,int& port,int& bufferSize);
+  #endif
 }
 void invoker_connect_client_dispatcher___USES_PORT_AS__(void** ref,int sockfd,int newsockfd, int buffer_size,char* rcvBuffer, char* sendBuffer){
   long long portref=0;
@@ -31,9 +45,12 @@ void invoker_connect_client_dispatcher___USES_PORT_AS__(void** ref,int sockfd,in
 
   readData((char*)host,hostname_len,rcvBuffer,newsockfd,buffer_size);
   readData((char*)&port,sizeof(int),rcvBuffer,newsockfd,buffer_size);
-   
-  __COMPONENT_NAME___fproxy_connect_client_dispatcher___USES_PORT_AS___(ref,&portref,host,port,buffer_size);
+  #ifdef _WIN32 
+  __COMPONENT_NAME___fproxy_connect_client_dispatcher___USES_PORT_AS__(ref,&portref,host,port,buffer_size);
   
+  #else
+  __COMPONENT_NAME___fproxy_connect_client_dispatcher___USES_PORT_AS___(ref,&portref,host,port,buffer_size);
+  #endif
   
   sendData((char*)&portref,sizeof(long long),sendBuffer,newsockfd,buffer_size);
    std::cout<<"finished dispatcher conn:"<<host<<","<<port<<std::endl;
@@ -43,10 +60,18 @@ void invoker_connect_client_dispatcher___USES_PORT_AS__(void** ref,int sockfd,in
 
 
 extern "C" {
+  #ifdef _WIN32
+  void __COMPONENT_NAME___fproxy_disconnect_client_dispatcher___USES_PORT_AS__(void** ref);
+  #else
   void __COMPONENT_NAME___fproxy_disconnect_client_dispatcher___USES_PORT_AS___(void** ref);
+  #endif	
 }
 
 void invoker_disconnect_client_dispatcher___USES_PORT_AS__(void** ref,int sockfd,int newsockfd, int buffer_size,char* rcvBuffer, char* sendBuffer){
+  #ifdef _WIN32
+  __COMPONENT_NAME___fproxy_disconnect_client_dispatcher___USES_PORT_AS__(ref);
+  #else
   __COMPONENT_NAME___fproxy_disconnect_client_dispatcher___USES_PORT_AS___(ref);
+  #endif
 }
 

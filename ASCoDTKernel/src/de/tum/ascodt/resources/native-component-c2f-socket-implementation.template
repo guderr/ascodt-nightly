@@ -1,71 +1,132 @@
 //#include "__PATH_FULL_QUALIFIED_NAME__JNIProxy.h"
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <stdlib.h>
-#include <unistd.h>
+#ifdef _WIN32
+	#include <winsock2.h>
+	#include <ws2tcpip.h>
+	
+	#define bzero(b,len) (memset((b), '\0', (len)), (void) 0)  
+	#define bcopy(b1,b2,len) (memmove((b2), (b1), (len)), (void) 0)
+	#pragma comment(lib, "Ws2_32.lib")
+#else
+	#include <sys/types.h>
+	#include <sys/socket.h>
+	#include <netinet/in.h>
+	#include <netdb.h>
+	#include <unistd.h>
+	#include <arpa/inet.h>
+#endif
+
 #include <stdio.h>
 #include <assert.h>
 #include <algorithm>
 #include <iostream>
 #include <string.h>
-#include <arpa/inet.h>
+#include <stdlib.h>
+	
 extern "C" {
  
+ 	 #ifdef _WIN32
+ 	 void __COMPONENT_NAME___fproxy_createinstance(void** self);
+     void __COMPONENT_NAME___fproxy_destroyinstance(void** &self);
+     #else
      void __COMPONENT_NAME___fproxy_createinstance_(void** self);
      void __COMPONENT_NAME___fproxy_destroyinstance_(void** &self);
-     
+     #endif
 } 
 
-void open_client(const char* hostname,int port,int &sockfd,int &newsockfd){
-          struct sockaddr_in serv_addr;
-          struct hostent *server;
-
-          sockfd = socket(AF_INET, SOCK_STREAM, 0);
+void open_client(const char* hostname,const char* port,
+#ifdef _WIN32
+SOCKET
+#else
+int
+#endif  
+&sockfd,
+#ifdef _WIN32
+SOCKET
+#else
+int
+#endif  
+&newsockfd){
+#ifdef _WIN32
+		 WSADATA wsaData;
+		 int iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
+	     assert (iResult == 0);
+#endif
+          struct addrinfo *result = NULL,
+     	                   hints;
+          bzero( &hints, sizeof(hints) );
+          hints.ai_family = AF_UNSPEC;
+          hints.ai_socktype = SOCK_STREAM;
+          hints.ai_protocol = IPPROTO_TCP;
+          getaddrinfo(hostname, port, &hints, &result);
+          sockfd = socket(result->ai_family, result->ai_socktype, 
+            result->ai_protocol);
           assert(sockfd >= 0);
-          server = gethostbyname(hostname);
-          assert(server>=0);
-          bzero((char *) &serv_addr, sizeof(serv_addr));
-          serv_addr.sin_family = AF_INET;
-          bcopy((char *)server->h_addr,
-                    (char *)&serv_addr.sin_addr.s_addr,
-                    server->h_length);
-          serv_addr.sin_port = htons(port);
+          
           int tries=60;
                 while(tries>0){
-               if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) >= 0)
+                 if (connect(sockfd, result->ai_addr, (int)result->ai_addrlen)==0)
                     break;
                          tries--;
-               sleep(1);
+#ifdef _WIN32
+						 Sleep(1000);
+#else
+						 sleep(1);
+#endif	
                 }   
          newsockfd=sockfd;
 }
 
-void open_server(int port,int &sockfd,int &newsockfd){
-          socklen_t clilen;
+void open_server(const char* port,
+#ifdef _WIN32
+SOCKET
+#else
+int
+#endif 
+&sockfd,
+#ifdef _WIN32
+SOCKET
+#else
+int
+#endif
+&newsockfd
+){
 
-          struct sockaddr_in serv_addr, cli_addr;
 
-          sockfd = socket(AF_INET, SOCK_STREAM, 0);
+#ifdef _WIN32
+		 WSADATA wsaData;
+		 int iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
+	     assert (iResult == 0);
+#endif
+          struct addrinfo hints;
+	      struct addrinfo *result = NULL;
+         
+
+          bzero(&hints, sizeof(hints));
+          hints.ai_family = AF_INET;
+          hints.ai_socktype = SOCK_STREAM;
+		  hints.ai_protocol = IPPROTO_TCP;
+		  hints.ai_flags = AI_PASSIVE;
+          getaddrinfo(NULL, port, &hints, &result);
+		  
+		  sockfd = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
           assert (sockfd>=0);
-
-          bzero((char *) &serv_addr, sizeof(serv_addr));
-          serv_addr.sin_family = AF_INET;
-          serv_addr.sin_addr.s_addr = INADDR_ANY;
-          serv_addr.sin_port = htons(port);
-          assert (bind(sockfd, (struct sockaddr *) &serv_addr,
-                    sizeof(serv_addr)) >= 0);
+          bind(sockfd, result->ai_addr, (int)result->ai_addrlen);
+		  
           listen(sockfd,5);
-          clilen = sizeof(cli_addr);
+         
           newsockfd = accept(sockfd,
-                    (struct sockaddr *) &cli_addr,
-                    &clilen);
+                    NULL,
+                    NULL);
           assert (newsockfd >= 0);
 }
 
-
-void sendData(char* data, size_t numberOfBytes, char* sendBuffer, int newsockfd,int bufferSize){
+void sendData(char* data, size_t numberOfBytes, char* sendBuffer,
+#ifdef _WIN32
+SOCKET
+#else
+int
+#endif 
+newsockfd,int bufferSize){
      char* data_ptr=(char*)data;
      int remaining_bytes_to_send=0,total_send_bytes=0,send_bytes=0,n=0;
 
@@ -77,7 +138,20 @@ void sendData(char* data, size_t numberOfBytes, char* sendBuffer, int newsockfd,
           send_bytes=0;
           char* send_buffer_ptr=sendBuffer;
           while(send_bytes<bufferSize){
-               n = write(newsockfd,send_buffer_ptr,bufferSize-send_bytes);
+               n = 
+#ifdef _WIN32
+				   send(
+#else
+
+				   write(
+#endif
+				   newsockfd,send_buffer_ptr,bufferSize-send_bytes
+#ifdef _WIN32
+				   ,0
+#else
+
+#endif
+				   );
                if(n>0){
                     send_bytes+=n;
                     send_buffer_ptr+=n;
@@ -90,7 +164,13 @@ void sendData(char* data, size_t numberOfBytes, char* sendBuffer, int newsockfd,
 }
 
 
-void readData(char* data,size_t size_of_data,char* readBuffer,int newsockfd, int bufferSize){
+void readData(char* data,size_t size_of_data,char* readBuffer,
+#ifdef _WIN32
+SOCKET
+#else
+int
+#endif 
+newsockfd, int bufferSize){
           bzero(readBuffer,bufferSize);
           int bytes_received=0;
           int total_bytes_received=0;
@@ -103,7 +183,18 @@ void readData(char* data,size_t size_of_data,char* readBuffer,int newsockfd, int
                bytes_received=0;
                buffer_ptr=readBuffer;
                while(bytes_received<bufferSize){
-                    local_bytes_received = read(newsockfd,buffer_ptr,bufferSize-bytes_received);
+                    local_bytes_received = 
+#ifdef _WIN32
+						recv(
+#else
+						read(
+#endif
+							newsockfd,buffer_ptr,bufferSize-bytes_received
+#ifdef _WIN32
+							,0
+#else
+#endif
+							);
                     if(local_bytes_received>0){
                          bytes_received+=local_bytes_received;
                          buffer_ptr+=local_bytes_received;
@@ -118,27 +209,64 @@ void readData(char* data,size_t size_of_data,char* readBuffer,int newsockfd, int
 }
 
 void invoker_create_instance(void** ref,int,int,int,char*,char*){
+     #ifdef _WIN32
+     __COMPONENT_NAME___fproxy_createinstance(ref);
+     #else
+     
      __COMPONENT_NAME___fproxy_createinstance_(ref);
-  
+  	 #endif
 }
 
 void invoker_destroy_instance(void** ref,int,int,int,char*,char*){
+     #ifdef _WIN32
+     __COMPONENT_NAME___fproxy_destroyinstance(ref);
+     #else
      __COMPONENT_NAME___fproxy_destroyinstance_(ref);
+     #endif
   
 }
 -- INSERT HERE --
 
-void close(int &sockfd,int &newsockfd){
+void close(
+#ifdef _WIN32
+SOCKET
+#else
+int
+#endif
+&sockfd,
+#ifdef _WIN32
+SOCKET
+#else
+int
+#endif
+&newsockfd){
+#ifdef _WIN32
+	 if(newsockfd>=0)
+         closesocket(newsockfd);
+     if(sockfd>=0)
+         closesocket(sockfd);
+#else
+
      if(newsockfd>=0)
          close(newsockfd);
      if(sockfd>=0)
          close(sockfd);
+#endif
 }
 
 extern "C"{
+#ifdef _WIN32
+void SOCKET_CLIENT_LOOP(){
+#else
 void socket_client_loop_(){
+#endif
   void* ref=NULL;
-  int sockfd=-1,newsockfd=-1;
+#ifdef _WIN32
+SOCKET sockfd;
+SOCKET newsockfd;
+#else
+int sockfd=-1,newsockfd=-1;
+#endif
   int methodId=0;
   int bufferSize=1024;
   char* hostname;
@@ -152,7 +280,7 @@ void socket_client_loop_(){
   invokers[0]=invoker_create_instance;
   invokers[1]=invoker_destroy_instance;
   __SET_CLIENT_INVOKERS__
-  open_client(hostname,atoi(port_str),sockfd,newsockfd);
+  open_client(hostname,port_str,sockfd,newsockfd);
   
   
   invokers[0](&ref,sockfd,newsockfd,bufferSize,rcvBuffer,sendBuffer);
@@ -163,16 +291,29 @@ void socket_client_loop_(){
      
   }
   close(sockfd,newsockfd);   
-     
+  #ifdef _WIN32
+  WSACleanup();
+  #endif   
 
 
   delete [] sendBuffer;
   delete [] rcvBuffer;    
 }
 
+#ifdef _WIN32
+void SOCKET_SERVER_LOOP(){
+#else
 void socket_server_loop_(){
+#endif
+  std::cout<<"starting a server application"<<std::endl;
   void* ref=NULL;
-  int sockfd=-1,newsockfd=-1;
+#ifdef _WIN32
+SOCKET sockfd;
+SOCKET newsockfd;
+#else
+int sockfd=-1,newsockfd=-1;
+#endif
+ 
   int methodId=0;
   int bufferSize=1024;
   char *sendBuffer=new char[bufferSize];
@@ -183,7 +324,7 @@ void socket_server_loop_(){
   invokers[0]=invoker_create_instance;
   invokers[1]=invoker_destroy_instance;
   __SET_SERVER_INVOKERS__
-  open_server(atoi(port_str),sockfd,newsockfd);
+  open_server(port_str,sockfd,newsockfd);
   
   
   invokers[0](&ref,sockfd,newsockfd,bufferSize,rcvBuffer,sendBuffer);
@@ -193,8 +334,11 @@ void socket_server_loop_(){
      invokers[methodId](&ref,sockfd,newsockfd,bufferSize,rcvBuffer,sendBuffer);
      
   }
+  std::cout<<"closing application"<<std::endl;
   close(sockfd,newsockfd);   
-     
+  #ifdef _WIN32
+  WSACleanup();
+  #endif  
 
 
   delete [] sendBuffer;

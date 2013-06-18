@@ -1,5 +1,5 @@
 
-subroutine __COMPONENT_NAME___fproxy_create_client_port_for___USES_PORT_AS__(this,host,port,buffer_size)
+subroutine __COMPONENT_NAME___fproxy_create_client_port_for___USES_PORT_AS__(this,host,port,buffer_size) bind(C)
      Use __FULL_QUALIFIED_USES_PORT_TYPE__2SocketPort
      Use, intrinsic :: iso_c_binding
      integer(kind=c_long_long ),intent(inout) :: this
@@ -13,7 +13,7 @@ subroutine __COMPONENT_NAME___fproxy_create_client_port_for___USES_PORT_AS__(thi
 end subroutine __COMPONENT_NAME___fproxy_create_client_port_for___USES_PORT_AS__
 
 
-subroutine __COMPONENT_NAME___fproxy_connect_client_dispatcher___USES_PORT_AS__(this,dispatcher,host,port,buffer_size)
+subroutine __COMPONENT_NAME___fproxy_connect_client_dispatcher___USES_PORT_AS__(this,dispatcher,host,port,buffer_size) bind(C)
      Use __FULL_QUALIFIED_NAME__Implementation
      Use __FULL_QUALIFIED_USES_PORT_TYPE__FNativeSocketDispatcher
      Use, intrinsic :: iso_c_binding
@@ -32,7 +32,7 @@ subroutine __COMPONENT_NAME___fproxy_connect_client_dispatcher___USES_PORT_AS__(
 end subroutine __COMPONENT_NAME___fproxy_connect_client_dispatcher___USES_PORT_AS__
 
 
-subroutine __COMPONENT_NAME___fproxy_disconnect_client_dispatcher___USES_PORT_AS__(this,port)
+subroutine __COMPONENT_NAME___fproxy_disconnect_client_dispatcher___USES_PORT_AS__(this,port) bind(C)
      Use __FULL_QUALIFIED_NAME__Implementation
      Use __FULL_QUALIFIED_USES_PORT_TYPE__FNativeSocketDispatcher
      Use, intrinsic :: iso_c_binding

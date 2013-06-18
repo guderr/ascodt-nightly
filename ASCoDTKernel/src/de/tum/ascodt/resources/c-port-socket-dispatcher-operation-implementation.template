@@ -1,4 +1,8 @@
+#ifdef _WIN32
+void __C_FULL_QUALIFIED_NAME_4WIN___F2C_NSD___OPERATION_NAME_4WIN__(long long* ref__OPERATION_PARAMETERS_LIST__){
+#else
 void __C_FULL_QUALIFIED_NAME___f2c_nsd___OPERATION_NAME___(long long* ref__OPERATION_PARAMETERS_LIST__){
+#endif
     
      __PREPARE__STRING_ARGS__
      ((__CXX_FULL_QUALIFIED_NAME__NativeSocketDispatcher*)*ref)->__CXX_OPERATION_NAME__(__FUNCTION_CALL_PARAMETERS_LIST__);

@@ -139,7 +139,15 @@ public class SocketComponent
           
           java.nio.ByteBuffer buffer=java.nio.ByteBuffer.allocateDirect(_bufferSize).order(java.nio.ByteOrder.LITTLE_ENDIAN);
           buffer.asIntBuffer().put(data);
-          _channel.write(buffer);
+          try{
+          _channel.write(buffer).get();
+          } catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (java.util.concurrent.ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
      }
 
      protected void sendIntData(int []data) throws java.io.IOException{
@@ -152,8 +160,15 @@ public class SocketComponent
             byte []buf=new byte[1024];
             java.nio.ByteBuffer sendBuf=java.nio.ByteBuffer.wrap(buf).order(java.nio.ByteOrder.LITTLE_ENDIAN);
               buffer.get(buf);
-             
-            _channel.write(sendBuf);
+            try{ 
+            _channel.write(sendBuf).get();
+            } catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (java.util.concurrent.ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
             offset++;
           }
      }
@@ -161,7 +176,15 @@ public class SocketComponent
      protected void sendDoubleData(double data) throws java.io.IOException{
           java.nio.ByteBuffer buffer=java.nio.ByteBuffer.allocateDirect(_bufferSize).order(java.nio.ByteOrder.LITTLE_ENDIAN);
           buffer.asDoubleBuffer().put(data);
-          _channel.write(buffer);
+          try{
+          _channel.write(buffer).get();
+          } catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (java.util.concurrent.ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
      }
      
      protected void sendDoubleData(double []data) throws java.io.IOException{
@@ -173,8 +196,15 @@ public class SocketComponent
             byte []buf=new byte[1024];
             java.nio.ByteBuffer sendBuf=java.nio.ByteBuffer.wrap(buf).order(java.nio.ByteOrder.LITTLE_ENDIAN);
               buffer.get(buf);
-             
-            _channel.write(sendBuf);
+            try{ 
+            _channel.write(sendBuf).get();
+            } catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (java.util.concurrent.ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
             offset++;
          }
      }
@@ -183,7 +213,15 @@ public class SocketComponent
           java.nio.ByteBuffer buffer=java.nio.ByteBuffer.allocate(_bufferSize);
           buffer.order(java.nio.ByteOrder.LITTLE_ENDIAN);
           buffer.putInt(data?1:0);
-          _channel.write(buffer);
+          try{
+          _channel.write(buffer).get();
+          } catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (java.util.concurrent.ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
      }
 
      protected void sendBooleanData(boolean[] data) throws java.io.IOException{
@@ -202,7 +240,15 @@ public class SocketComponent
                }else{
                     buffer.asIntBuffer().put(convertedData,offset,(bytes2Copy-copiedBytes)/4);
                }
-               _channel.write(buffer);
+               try{
+               _channel.write(buffer).get();
+               } catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (java.util.concurrent.ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
           }
      }
 
@@ -213,7 +259,15 @@ public class SocketComponent
           buffer.put(strBuf);   
           sendIntData(strBuf.capacity());
           buffer.rewind();
-          _channel.write(buffer);
+          try{
+          _channel.write(buffer).get();
+          } catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (java.util.concurrent.ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
      }
      
      protected void sendStringData(String [] data) throws java.io.IOException {
@@ -258,11 +312,10 @@ public class SocketComponent
 
      protected double readDoubleData() throws java.io.IOException, java.lang.InterruptedException,java.util.concurrent.ExecutionException{
 
-          java.nio.ByteBuffer buffer=java.nio.ByteBuffer.allocate(_bufferSize);
-          buffer.order(java.nio.ByteOrder.LITTLE_ENDIAN);
-          _channel.read(buffer).get();
-          double data=buffer.getDouble();
-          return data;
+           java.nio.ByteBuffer buffer=java.nio.ByteBuffer.allocateDirect(_bufferSize).order(java.nio.ByteOrder.LITTLE_ENDIAN);
+         _channel.read(buffer).get();
+          buffer.flip();
+          return buffer.getDouble();
      }
 
 
@@ -328,7 +381,15 @@ public class SocketComponent
      protected void sendLongData(long data) throws java.io.IOException{
        java.nio.ByteBuffer buffer=java.nio.ByteBuffer.allocateDirect(_bufferSize).order(java.nio.ByteOrder.LITTLE_ENDIAN);
        buffer.asLongBuffer().put(data);
-       _channel.write(buffer);
+       try{
+       _channel.write(buffer).get();
+       } catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (java.util.concurrent.ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
      }
      
      protected long readLongData() throws java.io.IOException, java.lang.InterruptedException,java.util.concurrent.ExecutionException{

@@ -1,13 +1,19 @@
 
 extern "C" {
-     void __COMPONENT_NAME___fproxy___F_OPERATION_NAME___(void** ref__OPERATION_PARAMETERS_LIST_C2F__);
+     #ifdef _WIN32
+     void __COMPONENT_NAME___fproxy___F_OPERATION_NAME__(void** ref__OPERATION_PARAMETERS_LIST_C2F__);
+	 #else
+	 void __COMPONENT_NAME___fproxy___F_OPERATION_NAME___(void** ref__OPERATION_PARAMETERS_LIST_C2F__);
+	 #endif
 }
 
 void invoker___OPERATION_NAME__(void** ref,int sockfd,int newsockfd, int buffer_size,char* rcvBuffer, char* sendBuffer){
   __SOCKET_PULL__
-  
+  #ifdef _WIN32
+  __COMPONENT_NAME___fproxy___F_OPERATION_NAME__(ref__FUNCTION_CALL_PARAMETERS_LIST__);
+  #else
   __COMPONENT_NAME___fproxy___F_OPERATION_NAME___(ref__FUNCTION_CALL_PARAMETERS_LIST__);
-  
+  #endif
   __SOCKET_PUSH__
   std::cout<<"finished invoking __OPERATION_NAME__"<<std::endl;
 }
