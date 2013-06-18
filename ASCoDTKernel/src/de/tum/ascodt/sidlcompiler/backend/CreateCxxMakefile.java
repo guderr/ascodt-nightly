@@ -22,7 +22,7 @@ import de.tum.ascodt.utils.exceptions.ASCoDTException;
  */
 public class CreateCxxMakefile extends de.tum.ascodt.sidlcompiler.frontend.analysis.DepthFirstAdapter{
 
-	private Trace                      				_trace = new Trace(CreateFortranMakefile.class.getCanonicalName());
+	private Trace                      				_trace = new Trace(CreateCxxMakefile.class.getCanonicalName());
 	private java.util.Stack< TemplateFile >   _templateFilesOfMakefile;
 	private URL                               _userImplementationsDestinationDirectory;
 	private URL 							  							_generatedFilesDirectory;

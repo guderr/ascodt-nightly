@@ -1,0 +1,43 @@
+cmake_minimum_required(VERSION 2.8.6)
+PROJECT(__COMPONENT_NAME__)
+
+find_package(JNI)
+
+if (JNI_FOUND)
+    message (STATUS "JNI_INCLUDE_DIRS=${JNI_INCLUDE_DIRS}")
+    message (STATUS "JNI_LIBRARIES=${JNI_LIBRARIES}")
+    INCLUDE_DIRECTORIES(${JNI_INCLUDE_DIRS})
+endif()
+
+include(CMakeForceCompiler)	   
+CMAKE_FORCE_Fortran_COMPILER(ifort.exe "Intel Fortran Compiler")
+message(STATUS ${CMAKE_Fortran_COMPILER})
+message(STATUS ${CMAKE_CXX_COMPILER})
+message(STATUS ${CMAKE_C_COMPILER})
+enable_language( Fortran ) 
+
+INCLUDE_DIRECTORIES(../commons)
+INCLUDE_DIRECTORIES(../src)
+INCLUDE_DIRECTORIES(../components/java)
+SET(EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}/bin")
+
+
+
+FILE( GLOB_RECURSE SRC_EXEC
+	../components/java/__PATH_FULL_QUALIFIED_NAME__AbstractImplementation.f90
+	../src/__PATH_FULL_QUALIFIED_NAME__Implementation.f90 
+	../components/java/__PATH_FULL_QUALIFIED_NAME__FProxy.f90
+	../components/java/__PATH_FULL_QUALIFIED_NAME__C2FProxy.cpp 
+	
+)
+
+FILE( GLOB_RECURSE SRC_LIB
+	../components/java/__PATH_FULL_QUALIFIED_NAME__AbstractImplementation.f90
+	../src/__PATH_FULL_QUALIFIED_NAME__Implementation.f90
+	../components/java/__PATH_FULL_QUALIFIED_NAME__JNIProxy.cpp)
+
+-- INSERT HERE --
+ 	 
+ADD_EXECUTABLE(__COMPONENT_NAME__ ${SRC_EXEC} )
+ADD_LIBRARY(__COMPONENT_NAME__ STATIC ${SRC_LIB} )
+SET_TARGET_PROPERTIES(__COMPONENT_NAME__ PROPERTIES LINKER_LANGUAGE Fortran)

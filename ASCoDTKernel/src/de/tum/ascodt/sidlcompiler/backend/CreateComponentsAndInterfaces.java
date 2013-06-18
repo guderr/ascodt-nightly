@@ -108,7 +108,7 @@ public class CreateComponentsAndInterfaces {
 							nativeDestinationDirectory,
 							_symbolTable.getScope(component).getFullIdentifierOfPackage()
 							);
-					CreateFortranMakefile createMakefile = new CreateFortranMakefile(
+					CreateBuildScripts createMakefile = new CreateBuildScripts(
 							_symbolTable, 
 							userImplementedFilesDestinationDirectory,
 							generatedFilesDestinationDirectory,
@@ -186,7 +186,7 @@ public class CreateComponentsAndInterfaces {
 							_symbolTable.getScope(component).getFullIdentifierOfPackage(),
 							offset_map
 							);
-					CreateFortranMakefile createMakefile = new CreateFortranMakefile(
+					CreateBuildScripts createMakefile = new CreateBuildScripts(
 							_symbolTable, 
 							userImplementedFilesDestinationDirectory,
 							generatedFilesDestinationDirectory,
@@ -213,7 +213,7 @@ public class CreateComponentsAndInterfaces {
 							generatedFilesDestinationDirectory,
 							_symbolTable.getScope(component).getFullIdentifierOfPackage()
 							);
-					CreateFortranMakefile createMakefile = new CreateFortranMakefile(
+					CreateBuildScripts createMakefile = new CreateBuildScripts(
 							_symbolTable, 
 							userImplementedFilesDestinationDirectory,
 							generatedFilesDestinationDirectory,
