@@ -9,8 +9,13 @@ package de.tum.charts;
 
 
 public class LinePlotterJavaImplementation extends LinePlotterBasisJavaImplementation {
-  public LinePlotterJavaImplementation( String identifier ) {
+  
+  private LinePlotterUI _ui;
+
+public LinePlotterJavaImplementation( String identifier ) {
     super(identifier);
+    _ui = new LinePlotterUI(this);
+    _ui.setVisible(false);
   }
   
   
@@ -21,18 +26,17 @@ public class LinePlotterJavaImplementation extends LinePlotterBasisJavaImplement
 
 
   public boolean hasGUI() {
-    // @todo Insert your code here
-    return false;
+    return true;
   }
   
   
   public void openGUI() {
-    // @todo Insert your code here
+	  _ui.setVisible(true);
   }
   
   
   public void closeGUI() {
-    // @todo Insert your code here
+	  _ui.setVisible(false);
   }
 
   public void destroy(){
