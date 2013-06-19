@@ -329,6 +329,22 @@
             name="ASCoDT Compiler">
       </page>
    </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            description="Components tools"
+            id="de.tum.ascodt.plugin.actions.BuildComponentsActionSet"
+            label="Components tools"
+            visible="true">
+         <action
+               class="de.tum.ascodt.plugin.core.actions.BuildComponentsAction"
+               icon="src/de/tum/ascodt/plugin/ui/resources/build_2.gif"
+               id="de.tum.ascodt.plugin.actions.BuildComponentsAction"
+               label="Build component"
+               toolbarPath="Normal/additions">
+         </action>
+      </actionSet>
+   </extension>
    
    
 </plugin>

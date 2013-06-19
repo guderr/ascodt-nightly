@@ -41,14 +41,14 @@ public class CreateBuildScripts extends de.tum.ascodt.sidlcompiler.frontend.anal
 	public void inAClassPackageElement(AClassPackageElement node) {
 		try {
 			String  componentName              = node.getName().getText();
+			String fullQualifiedName													 = _symbolTable.getScope(node).getFullQualifiedName(componentName) ;
 
 			String  templateFileForFortranMakefile 						     = "makefile-fortran.template";
 			String  destinationFileForFortranMakefile							 = _userImplementationsDestinationDirectory.toString() + File.separatorChar + "Makefile."+componentName;
 			String  templateFileForFortranCMakefile 						     = "cmakefile-fortran.template";
-			String  destinationFileForFortranCMakefile							 = _userImplementationsDestinationDirectory.toString() + File.separatorChar + "CMakeLists."+componentName+".txt";
+			String  destinationFileForFortranCMakefile							 = _userImplementationsDestinationDirectory.toString() + File.separatorChar + "cmake-"+fullQualifiedName+ File.separatorChar +"CMakeLists.txt";
 			
-			String fullQualifiedName													 = _symbolTable.getScope(node).getFullQualifiedName(componentName) ;
-
+			
 			_templateFilesOfFortranMakefile.push(
 					new TemplateFile( templateFileForFortranMakefile, destinationFileForFortranMakefile, _namespace, TemplateFile.getLanguageConfigurationForCPP(),true)
 					);
@@ -103,13 +103,17 @@ public class CreateBuildScripts extends de.tum.ascodt.sidlcompiler.frontend.anal
 			GetProvidesAndUsesPortsOfComponent getPorts = new GetProvidesAndUsesPortsOfComponent();
 			node.apply( getPorts );
 			String templateMakefileName = "makefile-fortran-uses-port.template";
-
+			String templateCMakefileName = "cmakefile-fortran-uses-port.template";
 			String portTypePath = getPorts.getUsesPorts("", "/");
 
 			TemplateFile templateMakefile = new TemplateFile( _templateFilesOfFortranMakefile.peek(), templateMakefileName );
 			templateMakefile.addMapping("__USES_PORT_PATH__",portTypePath);
 			templateMakefile.open();
 			templateMakefile.close();
+			TemplateFile templateCMakefile = new TemplateFile( _templateFilesOfFortranCMakefile.peek(), templateCMakefileName );
+			templateCMakefile.addMapping("__USES_PORT_PATH__",portTypePath);
+			templateCMakefile.open();
+			templateCMakefile.close();
 		}catch (ASCoDTException  e ) {
 			ErrorWriterDevice.getInstance().showError(getClass().getName(), "inAInterfacePackageElement(...)", e);
 		}

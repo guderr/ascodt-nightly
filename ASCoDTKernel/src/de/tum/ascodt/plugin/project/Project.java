@@ -27,9 +27,7 @@ import javax.tools.JavaCompiler.CompilationTask;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -54,7 +52,6 @@ import org.eclipse.ui.part.FileEditorInput;
 
 import de.tum.ascodt.plugin.ASCoDTKernel;
 import de.tum.ascodt.plugin.project.ProjectBuilder;
-import de.tum.ascodt.plugin.project.natures.ASCoDTNature;
 import de.tum.ascodt.plugin.repository.ClasspathRepository;
 import de.tum.ascodt.plugin.ui.editors.gef.WorkbenchEditor;
 import de.tum.ascodt.plugin.ui.gef.model.Diagram;
@@ -147,15 +144,15 @@ public class Project {
 	 */
 	private ClasspathRepository _classpathRepository;
 
-	private boolean _loaderRunning;
-
-	private Object _mutex = new Object();
-	public Project(org.eclipse.core.resources.IProject eclipseProjectHandle) throws ASCoDTException, MalformedURLException {
+	public Project(org.eclipse.core.resources.IProject eclipseProjectHandle) throws ASCoDTException {
 		_trace.in( "Project(...)", eclipseProjectHandle.getName() );
 		_eclipseProjectHandle = eclipseProjectHandle;
 		_staticRepository     = new de.tum.ascodt.repository.Repository();
-		_loaderRunning=false;
-		resetClasspathRepository();
+		try {
+			initiliaseClasspathRepository();
+		} catch (IOException e) {
+			throw new ASCoDTException(getClass().getName(), "Project()", "initilisation of classspath repository failed!", e);
+		}
 
 		_projectFileName      = "." + _eclipseProjectHandle.getName() + ".ascodt";
 		_folders = new Vector<IFolder>();
@@ -185,42 +182,18 @@ public class Project {
 		_trace.out( "Project(...)", eclipseProjectHandle.getName() );
 	}
 
-
-
-	public void setLoaderFlag(boolean flag){
-		synchronized(_mutex){
-			_loaderRunning=flag;
-		}
-	}
-	
-	public boolean loaderIsRunning(){
-		boolean flag=false;
-		synchronized(_mutex){
-			flag= _loaderRunning;
-		}
-		
-	
-		return flag;
-	}
-
-	private void cleanClasspathRepository(){
+	/**
+	 * This method removes an existing classpath repository and initialises a new one
+	 * @throws IOException 
+	 */
+	private void initiliaseClasspathRepository() throws IOException {
 		if(_classpathRepository!=null){
-			_classpathRepository.clear();
+			_classpathRepository.close();
 			_classpathRepository=null;
 		}
-
-	}
-
-	/**
-	 * @throws MalformedURLException
-	 */
-	private void resetClasspathRepository() throws MalformedURLException {
-
 		_classpathRepository=new ClasspathRepository(_eclipseProjectHandle,ASCoDTKernel.getDefault().getClass().getClassLoader());
 		_classpathRepository.addURL(new File(_eclipseProjectHandle.getLocation().toPortableString()+"/bin").toURI().toURL());
 	}
-
-
 
 	/**
 	 * @return the _classpathRepository
@@ -228,9 +201,6 @@ public class Project {
 	public ClasspathRepository getClasspathRepository() {
 		return _classpathRepository;
 	}
-
-
-
 
 	/**
 	 * Build the global symbol table
@@ -275,6 +245,7 @@ public class Project {
 			throw new ASCoDTException(getClass().getName(), "buildProjectSources()", "getting sidl dependencies failed", e);
 		}
 	}
+	
 	/**
 	 * build all project sidl files in given folder
 	 * @param startSymbolsMap a hash map for stroring resources startsymbols
@@ -324,9 +295,6 @@ public class Project {
 			throw new ASCoDTException(getClass().getName(), "createSource()", "creating a source folder failed", e);
 		}
 	}
-
-
-
 
 	/**
 	 * creates a workbench file with the given name 
@@ -462,7 +430,6 @@ public class Project {
 		org.eclipse.core.resources.IFile sourceFile = _eclipseProjectHandle.getFile( getSourcesFolder()+"/"+componentName+".sidl");
 
 		try {
-			//createProjectFile(sourceFile,new ByteArrayInputStream(new byte[]{}));
 			Assert.isNotNull(namespace);
 			String[] namespaces;
 			if(namespace.equals("")){
@@ -524,18 +491,6 @@ public class Project {
 			templateFile.addMapping("__UITAB_CLASS__", UITab.class.getCanonicalName());
 			templateFile.open();
 			templateFile.close();
-
-
-
-			//			CreateLocalJavaComponent createJavaComponent = new CreateLocalJavaComponent(
-			//					_symbolTable,
-			//					ResourceManager.getResource("de/tum/ascodt/plugin/ui/resources/",ASCoDTKernel.ID), 
-			//					new File(_eclipseProjectHandle.getLocation().toPortableString()+getJavaSourcesFolder()).toURI().toURL(),
-			//					_symbolTable.getScope(_symbolTable.getGlobalScope().getClassDefinition(componentInterface)).getFullIdentifierOfPackage(),
-			//					"__UI__"
-			//					);
-			//			_symbolTable.getGlobalScope().getClassDefinition(componentInterface).apply(createJavaComponent);
-
 			_eclipseProjectHandle.refreshLocal(IResource.DEPTH_INFINITE, null);
 			compileComponents();
 		} catch (Exception e) {
@@ -724,11 +679,10 @@ public class Project {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				try {
-					cleanClasspathRepository();
+					initiliaseClasspathRepository();
 					System.gc();
-					
 					compileComponents_i();
-					resetClasspathRepository();
+					
 					return Status.OK_STATUS;
 				} catch (Exception e) {
 					return Status.CANCEL_STATUS;
@@ -803,7 +757,7 @@ public class Project {
 
 	}
 
-	private void openWorkbenchEditors(final Vector<IFile> workbenchInputs) throws ASCoDTException{
+	public void openWorkbenchEditors(final Vector<IFile> workbenchInputs) throws ASCoDTException{
 
 		Display.getDefault().asyncExec(new Runnable(){
 
@@ -826,7 +780,7 @@ public class Project {
 	 * this method closes all running workbench instances. It is needed to assure the consistency of the
 	 * component classes. the method is invoked by the compileComponents method
 	 */
-	private Vector<IFile> closeRunningWorkbenchInstances() {
+	public Vector<IFile> closeRunningWorkbenchInstances() {
 		final Vector<IFile> editorInputs=new Vector<IFile>();
 		Display.getDefault().syncExec(new Runnable(){
 

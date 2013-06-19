@@ -10,34 +10,36 @@ if (JNI_FOUND)
 endif()
 
 include(CMakeForceCompiler)	   
+CMAKE_FORCE_CXX_COMPILER(icl.exe "Intel Cxx Compiler") 
+CMAKE_FORCE_C_COMPILER(icl.exe "Intel C Compiler")     
 CMAKE_FORCE_Fortran_COMPILER(ifort.exe "Intel Fortran Compiler")
 message(STATUS ${CMAKE_Fortran_COMPILER})
 message(STATUS ${CMAKE_CXX_COMPILER})
 message(STATUS ${CMAKE_C_COMPILER})
 enable_language( Fortran ) 
 
-INCLUDE_DIRECTORIES(../commons)
-INCLUDE_DIRECTORIES(../src)
-INCLUDE_DIRECTORIES(../components/java)
-SET(EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}/bin")
+INCLUDE_DIRECTORIES(../../commons)
+INCLUDE_DIRECTORIES(../../src)
+INCLUDE_DIRECTORIES(../../components/java)
+SET(EXECUTABLE_OUTPUT_PATH "../../native")
+SET(LIBRARY_OUTPUT_PATH  "../../native/lib")
 
 
 
-FILE( GLOB_RECURSE SRC_EXEC
-	../components/java/__PATH_FULL_QUALIFIED_NAME__AbstractImplementation.f90
-	../src/__PATH_FULL_QUALIFIED_NAME__Implementation.f90 
-	../components/java/__PATH_FULL_QUALIFIED_NAME__FProxy.f90
-	../components/java/__PATH_FULL_QUALIFIED_NAME__C2FProxy.cpp 
+SET(SRC_COMP_EXEC
+	../../components/java/__PATH_FULL_QUALIFIED_NAME__AbstractImplementation.f90
+	../../src/__PATH_FULL_QUALIFIED_NAME__Implementation.f90 
+	../../components/java/__PATH_FULL_QUALIFIED_NAME__FProxy.f90
+	../../components/java/__PATH_FULL_QUALIFIED_NAME__C2FProxy.cpp 
 	
 )
 
-FILE( GLOB_RECURSE SRC_LIB
-	../components/java/__PATH_FULL_QUALIFIED_NAME__AbstractImplementation.f90
-	../src/__PATH_FULL_QUALIFIED_NAME__Implementation.f90
-	../components/java/__PATH_FULL_QUALIFIED_NAME__JNIProxy.cpp)
+SET(SRC_COMP_LIB
+	../../components/java/__PATH_FULL_QUALIFIED_NAME__AbstractImplementation.f90
+	../../src/__PATH_FULL_QUALIFIED_NAME__Implementation.f90)
 
 -- INSERT HERE --
  	 
-ADD_EXECUTABLE(__COMPONENT_NAME__ ${SRC_EXEC} )
-ADD_LIBRARY(__COMPONENT_NAME__ STATIC ${SRC_LIB} )
+ADD_EXECUTABLE(__COMPONENT_NAME__ ${SRC_COMP_EXEC} )
+ADD_LIBRARY(__COMPONENT_NAME__-dev STATIC ${SRC_COMP_LIB} )
 SET_TARGET_PROPERTIES(__COMPONENT_NAME__ PROPERTIES LINKER_LANGUAGE Fortran)

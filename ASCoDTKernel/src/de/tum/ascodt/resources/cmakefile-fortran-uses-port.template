@@ -1,29 +1,29 @@
-set(SRC_EXEC
-   	${SRC_EXEC}
-   	../components/java/__USES_PORT_PATH__Native2JavaPlainPort.cpp 
-   	../components/java/__USES_PORT_PATH__Native2NativePlainPort.cpp
-	../components/java/__USES_PORT_PATH__Cxx2SocketPlainPort.cpp
-	../components/java/__USES_PORT_PATH__C2CxxSocketPlainPort.cpp 
-	../components/java/__USES_PORT_PATH__NativeDispatcher.cpp
-	../components/java/__USES_PORT_PATH__NativeSocketDispatcher.cpp
-	../components/java/__USES_PORT_PATH__CProxyNativeSocketDispatcher.cpp
-	../components/java/__USES_PORT_PATH__2SocketPlainPort.f90
-	../components/java/__USES_PORT_PATH__2SocketPlainPortProxy.f90
-	../components/java/__USES_PORT_PATH__FNativeSocketDispatcher.f90
-	../components/java/__USES_PORT_PATH__FProxyNativeSocketDispatcher.f90
+set(SRC_COMP_EXEC
+   	${SRC_COMP_EXEC}
+   	../../components/java/__USES_PORT_PATH__Native2JavaPlainPort.cpp 
+   	../../components/java/__USES_PORT_PATH__Native2NativePlainPort.cpp
+	../../components/java/__USES_PORT_PATH__Cxx2SocketPlainPort.cpp
+	../../components/java/__USES_PORT_PATH__C2CxxSocketPlainPort.cpp 
+	../../components/java/__USES_PORT_PATH__NativeDispatcher.cpp
+	../../components/java/__USES_PORT_PATH__NativeSocketDispatcher.cpp
+	../../components/java/__USES_PORT_PATH__CProxyNativeSocketDispatcher.cpp
+	../../components/java/__USES_PORT_PATH__2SocketPlainPort.f90
+	../../components/java/__USES_PORT_PATH__2SocketPlainPortProxy.f90
+	../../components/java/__USES_PORT_PATH__FNativeSocketDispatcher.f90
+	../../components/java/__USES_PORT_PATH__FProxyNativeSocketDispatcher.f90
 )
 
-set(SRC_LIB
-   	${SRC_LIB}
-   	../components/java/__USES_PORT_PATH__Native2JavaPlainPort.cpp 
-   	../components/java/__USES_PORT_PATH__Native2NativePlainPort.cpp
-	../components/java/__USES_PORT_PATH__Cxx2SocketPlainPort.cpp
-	../components/java/__USES_PORT_PATH__C2CxxSocketPlainPort.cpp 
-	../components/java/__USES_PORT_PATH__NativeDispatcher.cpp
-	../components/java/__USES_PORT_PATH__NativeSocketDispatcher.cpp
-	../components/java/__USES_PORT_PATH__CProxyNativeSocketDispatcher.cpp
-	../components/java/__USES_PORT_PATH__2SocketPlainPort.f90
-	../components/java/__USES_PORT_PATH__2SocketPlainPortProxy.f90
-	../components/java/__USES_PORT_PATH__FNativeSocketDispatcher.f90
-	../components/java/__USES_PORT_PATH__FProxyNativeSocketDispatcher.f90
+set(SRC_COMP_LIB
+   	${SRC_COMP_LIB}
+   	../../components/java/__USES_PORT_PATH__Native2JavaPlainPort.cpp 
+   	../../components/java/__USES_PORT_PATH__Native2NativePlainPort.cpp
+	../../components/java/__USES_PORT_PATH__Cxx2SocketPlainPort.cpp
+	../../components/java/__USES_PORT_PATH__C2CxxSocketPlainPort.cpp 
+	../../components/java/__USES_PORT_PATH__NativeDispatcher.cpp
+	../../components/java/__USES_PORT_PATH__NativeSocketDispatcher.cpp
+	../../components/java/__USES_PORT_PATH__CProxyNativeSocketDispatcher.cpp
+	../../components/java/__USES_PORT_PATH__2SocketPlainPort.f90
+	../../components/java/__USES_PORT_PATH__2SocketPlainPortProxy.f90
+	../../components/java/__USES_PORT_PATH__FNativeSocketDispatcher.f90
+	../../components/java/__USES_PORT_PATH__FProxyNativeSocketDispatcher.f90
 )

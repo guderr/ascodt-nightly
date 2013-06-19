@@ -24,23 +24,14 @@ import de.tum.ascodt.plugin.utils.exceptions.ErrorWriterDevice;
 public class ClasspathRepository extends URLClassLoader {
 	private IProject _project;
 	private int _idCounter;
-	//private HashMap<URL,Integer> _urls;
 	public ClasspathRepository(IProject project, ClassLoader parent_loader){
 		super(new URL[]{},parent_loader);
 		this._project=project;
 		this._idCounter=0;
-		//this._urls=new HashMap<URL,Integer>();
 		
 	}
 
-	protected void finalize(){
-		System.out.println("removed classpath repository");
-		//ProjectBuilder.getInstance().getProject(_project).setLoaderFlag(false);
-	}
-
-	public void clear(){
-		//ProjectBuilder.getInstance().getProject(_project).setLoaderFlag(true);
-	}
+	
 	/**
 	 * Returns a new id
 	 * @return 
