@@ -161,10 +161,10 @@ public class Project {
 		org.eclipse.core.resources.IFile projectFile = _eclipseProjectHandle.getFile( getNameOfProjectFile() );
 		if (!projectFile.exists()) {
 			writeProjectFile();
-			addClasspathEntries();
+			
 
 		}
-
+		addClasspathEntries();
 		//folder for sidl files
 		createSource();
 
@@ -591,11 +591,12 @@ public class Project {
 								classElement.getEntryKind()==org.eclipse.jdt.core.IClasspathEntry.CPE_LIBRARY))
 					entries.add(classElement);
 			}
-
+			if(!entries.contains(JavaCore.newLibraryEntry(new Path(ResourceManager.getResourceAsPath("",ASCoDTKernel.ID).getPath()),null,null,false)))
 			entries.add(JavaCore.newLibraryEntry(new Path(ResourceManager.getResourceAsPath("",ASCoDTKernel.ID).getPath()),null,null,false));
+			if(!entries.contains(JavaCore.newLibraryEntry(new Path(ResourceManager.getResourceAsPath("swt.jar",ASCoDTKernel.ID).getPath()),null,null,false)))
 			entries.add(JavaCore.newLibraryEntry(new Path(ResourceManager.getResourceAsPath("swt.jar",ASCoDTKernel.ID).getPath()),null,null,false));
-
-			entries.add(JavaRuntime.getDefaultJREContainerEntry());
+			if(!entries.contains(JavaRuntime.getDefaultJREContainerEntry()))
+				entries.add(JavaRuntime.getDefaultJREContainerEntry());
 			IExtensionRegistry reg = RegistryFactory.getRegistry();
 			evaluateContributions(reg,entries);
 			javaProject.setRawClasspath(entries.toArray(new IClasspathEntry[entries.size()]), null);
@@ -622,7 +623,8 @@ public class Project {
 			IJavaProject javaProject = JavaCore.create(_eclipseProjectHandle); 
 			Set<IClasspathEntry> entries = new HashSet<IClasspathEntry>();
 			for(IClasspathEntry classElement: Arrays.asList(javaProject.getRawClasspath())){
-				entries.add(classElement);
+				if(!new Path(classElement.getPath().toFile().toURI().toURL().toString()).lastSegment().contains(this.getEclipseProjectHandle().getName()))
+					entries.add(classElement);
 			}
 			entries.add(JavaCore.newLibraryEntry(new Path(ResourceManager.getResourceAsPath("",ASCoDTKernel.ID).getPath()),null,null,false));
 			IClasspathEntry entry=JavaCore.newSourceEntry(new Path(entryPath));
