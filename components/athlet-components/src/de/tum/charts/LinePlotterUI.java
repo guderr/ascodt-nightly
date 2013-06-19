@@ -8,7 +8,23 @@
 package de.tum.charts;
 
 public class LinePlotterUI extends de.tum.ascodt.plugin.ui.tabs.UITab {
-     
+	 org.eclipse.swt.widgets.Canvas _canvas;
+	  
+	  int _left;
+	  int _right;
+	  int _top;
+	  int _bottom;
+
+	  double                         _minX;
+	  double                         _maxX;
+
+	  private enum PlotStyle {
+	    Points, Lines, LinesPoints
+	  }
+	  private PlotStyle              _plotStyle;
+	  private static final PlotStyle _InitialPlotStyle = PlotStyle.LinesPoints;               
+	  
+	  private org.eclipse.swt.widgets.Button    _plotStyleButton;
      public LinePlotterUI(LinePlotter component){
           super(component);
      }
@@ -18,8 +34,40 @@ public class LinePlotterUI extends de.tum.ascodt.plugin.ui.tabs.UITab {
       */
      @Override
      protected void createControlGroup() {
-          // TODO Auto-generated method stub
-          
+    	 this.tabFolderPage.setLayout(new org.eclipse.swt.layout.GridLayout());
+
+    	    _canvas = new org.eclipse.swt.widgets.Canvas( this.tabFolderPage,org.eclipse.swt.SWT.NONE );
+    	    _canvas.setLayoutData(new org.eclipse.swt.layout.GridData(org.eclipse.swt.layout.GridData.FILL_HORIZONTAL | org.eclipse.swt.layout.GridData.FILL_VERTICAL));
+    	    _canvas.addListener(
+    	      org.eclipse.swt.SWT.Paint, new org.eclipse.swt.widgets.Listener() {
+    	        public void handleEvent( org.eclipse.swt.widgets.Event event ) {
+    	          //draw(event.gc);
+    	        }
+    	      }
+    	    );
+    	    
+    	    _plotStyleButton = new org.eclipse.swt.widgets.Button(this.tabFolderPage, org.eclipse.swt.SWT.TOGGLE);
+    	    _plotStyleButton.setLayoutData(new org.eclipse.swt.layout.GridData(org.eclipse.swt.layout.GridData.FILL_HORIZONTAL));
+    	    _plotStyleButton.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+    	      public void widgetSelected (org.eclipse.swt.events.SelectionEvent  e) {
+    	        //switchPlotStyleLabel();
+    	        //_plotStyleButton.setText("Plot style: " + getPlotStyleLabel());
+//    	        _canvas.redraw();
+    	        redraw();
+    	      }
+    	    });
+    	    //_plotStyleButton.setText( "Plot style: " + getPlotStyleLabel(_InitialPlotStyle));
+    	    
+    	    org.eclipse.swt.widgets.Button clearButton = new org.eclipse.swt.widgets.Button(this.tabFolderPage, org.eclipse.swt.SWT.PUSH);
+    	    clearButton.setText("Clear");
+    	    clearButton.setLayoutData(new org.eclipse.swt.layout.GridData(org.eclipse.swt.layout.GridData.FILL_HORIZONTAL));
+    	    clearButton.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+    	      public void widgetSelected (org.eclipse.swt.events.SelectionEvent  e) {
+    	        //_hostingObject.clear();
+//    	        _canvas.redraw();
+    	        redraw();
+    	      }
+    	    });
      }
      
      private LinePlotter getCastedComponent(){
