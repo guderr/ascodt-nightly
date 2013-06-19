@@ -40,7 +40,9 @@ public LinePlotterJavaImplementation( String identifier ) {
   }
 
   public void destroy(){
-     super.destroy();
+	  _ui.dispose();
+	  super.destroy();
+     
   }
 
 }
