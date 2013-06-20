@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/de.tum.ascodt.plugin.features.ascodt_1.0.0.201306201000.jar" id="de.tum.ascodt.plugin.features.ascodt" version="1.0.0.201306201000">
+      <category name="de.tum.ascodt.plugin.categories.ascodt"/>
+   </feature>
+   <category-def name="de.tum.ascodt.plugin.categories.ascodt" label="ASCoDT">
+      <description>
+         ASCoDt plugins
+      </description>
+   </category-def>
+</site>
