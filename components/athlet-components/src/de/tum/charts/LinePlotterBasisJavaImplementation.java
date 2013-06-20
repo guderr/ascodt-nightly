@@ -196,9 +196,14 @@ public class LinePlotterBasisJavaImplementation extends de.tum.charts.LinePlotte
 	}
 	public LinePlotterBasisJavaImplementation( String identifier ) {
 		super(identifier);
+		_measurements = new java.util.Vector<Measurement>();
+		setXLabel("");
+		setYLabel("");
+		setTitle("");
 	}
 
 
+	
 	public void setTitle(String title) {
 		_title = title;
 	}
