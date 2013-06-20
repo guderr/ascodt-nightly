@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+<appenders>
+<Console name="STDOUT" target="SYSTEM_OUT">
+ <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+</Console>
+<Async name="Async">
+<appender-ref ref="STDOUT"/>
+</Async>
+</appenders>
+<loggers>
+ <logger name="grs.Quabox" level="info">
+   <appender-ref ref="Async"/>
+ </logger>
+<root level="error">
+<appender-ref ref="Async"/>
+</root>
+</loggers>
+</configuration>
