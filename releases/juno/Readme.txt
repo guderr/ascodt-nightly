@@ -1,1 +1,0 @@
-ASCoDT release for juno
