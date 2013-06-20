@@ -9,8 +9,11 @@ package grs;
 
 
 public class AthletJavaImplementation extends AthletBasisJavaImplementation {
-  public AthletJavaImplementation( String identifier ) {
+  private AthletUI _ui;
+
+public AthletJavaImplementation( String identifier ) {
     super(identifier);
+    _ui= new AthletUI(this);
   }
   
   
@@ -22,21 +25,22 @@ public class AthletJavaImplementation extends AthletBasisJavaImplementation {
 
   public boolean hasGUI() {
     // @todo Insert your code here
-    return false;
+    return true;
   }
   
   
   public void openGUI() {
-    // @todo Insert your code here
+   _ui.setVisible(true);
   }
   
   
   public void closeGUI() {
-    // @todo Insert your code here
+    _ui.setVisible(false);
   }
 
   public void destroy(){
      super.destroy();
+     _ui.dispose();
   }
 
 }
