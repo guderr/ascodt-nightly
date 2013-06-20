@@ -10,9 +10,7 @@ package de.tum.charts;
 
 public class LinePlotterJavaImplementation extends LinePlotterBasisJavaImplementation {
   
-  private LinePlotterUI _ui;
-
-public LinePlotterJavaImplementation( String identifier ) {
+  public LinePlotterJavaImplementation( String identifier ) {
     super(identifier);
     _ui = new LinePlotterUI(this);
     _ui.setVisible(false);
@@ -20,7 +18,6 @@ public LinePlotterJavaImplementation( String identifier ) {
   
   
   public boolean isValid() {
-    // @todo Insert your code here
     return true;
   }
 

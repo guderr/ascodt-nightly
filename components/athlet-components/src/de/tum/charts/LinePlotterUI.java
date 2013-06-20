@@ -7,73 +7,228 @@
 //
 package de.tum.charts;
 
+import java.text.DecimalFormat;
+
 public class LinePlotterUI extends de.tum.ascodt.plugin.ui.tabs.UITab {
-	 org.eclipse.swt.widgets.Canvas _canvas;
-	  
-	  int _left;
-	  int _right;
-	  int _top;
-	  int _bottom;
+	org.eclipse.swt.widgets.Canvas _canvas;
 
-	  double                         _minX;
-	  double                         _maxX;
+	int _left;
+	int _right;
+	int _top;
+	int _bottom;
 
-	  private enum PlotStyle {
-	    Points, Lines, LinesPoints
-	  }
-	  private PlotStyle              _plotStyle;
-	  private static final PlotStyle _InitialPlotStyle = PlotStyle.LinesPoints;               
-	  
-	  private org.eclipse.swt.widgets.Button    _plotStyleButton;
-     public LinePlotterUI(LinePlotter component){
-          super(component);
-     }
-     /**
-      * here you need to instantiate your own controls
-      * use _tabFolderPage as parent
-      */
-     @Override
-     protected void createControlGroup() {
-    	 this.tabFolderPage.setLayout(new org.eclipse.swt.layout.GridLayout());
+	double                         _minX;
+	double                         _maxX;
 
-    	    _canvas = new org.eclipse.swt.widgets.Canvas( this.tabFolderPage,org.eclipse.swt.SWT.NONE );
-    	    _canvas.setLayoutData(new org.eclipse.swt.layout.GridData(org.eclipse.swt.layout.GridData.FILL_HORIZONTAL | org.eclipse.swt.layout.GridData.FILL_VERTICAL));
-    	    _canvas.addListener(
-    	      org.eclipse.swt.SWT.Paint, new org.eclipse.swt.widgets.Listener() {
-    	        public void handleEvent( org.eclipse.swt.widgets.Event event ) {
-    	          //draw(event.gc);
-    	        }
-    	      }
-    	    );
-    	    
-    	    _plotStyleButton = new org.eclipse.swt.widgets.Button(this.tabFolderPage, org.eclipse.swt.SWT.TOGGLE);
-    	    _plotStyleButton.setLayoutData(new org.eclipse.swt.layout.GridData(org.eclipse.swt.layout.GridData.FILL_HORIZONTAL));
-    	    _plotStyleButton.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-    	      public void widgetSelected (org.eclipse.swt.events.SelectionEvent  e) {
-    	        //switchPlotStyleLabel();
-    	        //_plotStyleButton.setText("Plot style: " + getPlotStyleLabel());
-//    	        _canvas.redraw();
-    	        redraw();
-    	      }
-    	    });
-    	    //_plotStyleButton.setText( "Plot style: " + getPlotStyleLabel(_InitialPlotStyle));
-    	    
-    	    org.eclipse.swt.widgets.Button clearButton = new org.eclipse.swt.widgets.Button(this.tabFolderPage, org.eclipse.swt.SWT.PUSH);
-    	    clearButton.setText("Clear");
-    	    clearButton.setLayoutData(new org.eclipse.swt.layout.GridData(org.eclipse.swt.layout.GridData.FILL_HORIZONTAL));
-    	    clearButton.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-    	      public void widgetSelected (org.eclipse.swt.events.SelectionEvent  e) {
-    	        //_hostingObject.clear();
-//    	        _canvas.redraw();
-    	        redraw();
-    	      }
-    	    });
-     }
-     
-     private LinePlotter getCastedComponent(){
-          if(_component instanceof LinePlotter){
-               return (LinePlotter) _component;
-          }
-          return null;
-     }
+	private enum PlotStyle {
+		Points, Lines, LinesPoints
+	}
+	private PlotStyle              _plotStyle;
+	private static final PlotStyle _InitialPlotStyle = PlotStyle.LinesPoints;               
+
+	private org.eclipse.swt.widgets.Button    _plotStyleButton;
+	public LinePlotterUI(LinePlotter component){
+		super(component);
+	}
+	/**
+	 * here you need to instantiate your own controls
+	 * use _tabFolderPage as parent
+	 */
+	@Override
+	protected void createControlGroup() {
+		this.tabFolderPage.setLayout(new org.eclipse.swt.layout.GridLayout());
+
+		_canvas = new org.eclipse.swt.widgets.Canvas( this.tabFolderPage,org.eclipse.swt.SWT.NONE );
+		_canvas.setLayoutData(new org.eclipse.swt.layout.GridData(org.eclipse.swt.layout.GridData.FILL_HORIZONTAL | org.eclipse.swt.layout.GridData.FILL_VERTICAL));
+		_canvas.addListener(
+				org.eclipse.swt.SWT.Paint, new org.eclipse.swt.widgets.Listener() {
+					public void handleEvent( org.eclipse.swt.widgets.Event event ) {
+						draw(event.gc);
+					}
+				}
+				);
+
+		_plotStyleButton = new org.eclipse.swt.widgets.Button(this.tabFolderPage, org.eclipse.swt.SWT.TOGGLE);
+		_plotStyleButton.setLayoutData(new org.eclipse.swt.layout.GridData(org.eclipse.swt.layout.GridData.FILL_HORIZONTAL));
+		_plotStyleButton.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+			public void widgetSelected (org.eclipse.swt.events.SelectionEvent  e) {
+				switchPlotStyleLabel();
+				_plotStyleButton.setText("Plot style: " + getPlotStyleLabel());
+				_canvas.redraw();
+				redraw();
+			}
+		});
+		_plotStyleButton.setText( "Plot style: " + getPlotStyleLabel(_InitialPlotStyle));
+
+		org.eclipse.swt.widgets.Button clearButton = new org.eclipse.swt.widgets.Button(this.tabFolderPage, org.eclipse.swt.SWT.PUSH);
+		clearButton.setText("Clear");
+		clearButton.setLayoutData(new org.eclipse.swt.layout.GridData(org.eclipse.swt.layout.GridData.FILL_HORIZONTAL));
+		clearButton.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+			public void widgetSelected (org.eclipse.swt.events.SelectionEvent  e) {
+				getCastedComponentImplementation().clear();
+				_canvas.redraw();
+				redraw();
+			}
+		});
+	}
+
+
+	private String getPlotStyleLabel() {
+		return getPlotStyleLabel(_plotStyle);
+	}
+
+
+	private static String getPlotStyleLabel(PlotStyle style) {
+		switch (style) {
+		case Points: return "points";
+		case Lines:  return "lines";
+		case LinesPoints: return "lines with points";
+		default: return "error";
+		}
+	}
+	private void updateDrawArea(int width, int height) {
+		final int MinDistance = 50;
+
+		_left    = width/10 > MinDistance  ? MinDistance : width * 1/10;
+		_right   = width/10 > MinDistance  ? width- 2*MinDistance : width * 9/10;
+		_top     = height/10 > MinDistance ? MinDistance : height * 1/10;
+		_bottom  = height/10 > MinDistance ? height-2*MinDistance : height* 9/10;
+	}
+
+	private org.eclipse.swt.graphics.Color getColor( int measurementNumber, org.eclipse.swt.graphics.GC gc ) {
+		int scale = 1;
+		while (measurementNumber>6) {
+			scale             *= 2;
+			measurementNumber -= 6;
+		}
+		switch (measurementNumber) {
+		case 0:  return new org.eclipse.swt.graphics.Color(gc.getDevice(),   0,   0, 255/scale);    
+		case 1:  return new org.eclipse.swt.graphics.Color(gc.getDevice(),   0, 255/scale,   0);    
+		case 2:  return new org.eclipse.swt.graphics.Color(gc.getDevice(),   0, 255/scale, 255/scale);    
+		case 3:  return new org.eclipse.swt.graphics.Color(gc.getDevice(), 255/scale,   0,   0);    
+		case 4:  return new org.eclipse.swt.graphics.Color(gc.getDevice(), 255/scale,   0, 255/scale);    
+		case 5:  return new org.eclipse.swt.graphics.Color(gc.getDevice(), 218/scale, 165/scale,   32/scale);
+		default: return new org.eclipse.swt.graphics.Color(gc.getDevice(),   0,   0,   0);
+		}
+	}
+
+	private void updateMeasurementBoundingBox() {
+		_minX =  java.lang.Double.MAX_VALUE;
+		_maxX = -java.lang.Double.MAX_VALUE;
+
+		for (int i=0; i<getCastedComponentImplementation()._measurements.size(); i++) {
+			for (int j=0; j<getCastedComponentImplementation()._measurements.get(i).x.length; j++) {
+				if (getCastedComponentImplementation()._measurements.get(i).x[j]<_minX) {
+					_minX = getCastedComponentImplementation()._measurements.get(i).x[j];
+				}
+				if (getCastedComponentImplementation()._measurements.get(i).x[j]>_maxX) {
+					_maxX = getCastedComponentImplementation()._measurements.get(i).x[j];
+				}
+			}
+		}
+	}
+
+	private void draw(org.eclipse.swt.graphics.GC gc) {
+		final int           FontSize      = 18;
+		final DecimalFormat decimalFormat = new DecimalFormat("0.#####E00");
+
+		updateDrawArea(_canvas.getSize().x-1,_canvas.getSize().y-1 );
+		updateMeasurementBoundingBox();
+
+		// Background
+		gc.setBackground(new org.eclipse.swt.graphics.Color(gc.getDevice(), 255, 255, 255));
+		gc.fillRectangle(0,0,_canvas.getSize().x,_canvas.getSize().y);
+		// x axis
+		gc.drawLine(_left-10,_bottom,_right,_bottom);
+		// y axis
+		gc.drawLine(_left,_top,_left,_bottom+10);
+		// x-axis
+		gc.drawText(decimalFormat.format(_minX),_left,_bottom+1+FontSize);
+		gc.drawText(decimalFormat.format(_maxX),_right,_bottom+1+FontSize);
+		gc.drawText(getCastedComponentImplementation()._xLabel,(_left+_right)/2,_bottom+1+2*FontSize);
+		gc.drawText(getCastedComponentImplementation()._yLabel,_left-2*FontSize,(_top+_bottom)/2);
+
+		for (int i=0; i<getCastedComponentImplementation()._measurements.size(); i++) {
+			gc.setLineWidth(2); 
+			gc.setForeground(getColor(i,gc));
+
+			gc.drawLine((_left+_right)/2 - 2*FontSize, _top + i*FontSize + FontSize/2, (_left+_right)/2 - 2, _top + i*FontSize + FontSize/2 );
+			gc.drawText(getCastedComponentImplementation()._measurements.get(i).getLabelForPlot(), (_left+_right)/2, _top + i*FontSize);
+
+			if (getCastedComponentImplementation()._measurements.get(i).hasNiveauLineDifferentToXAxis()) {
+				gc.setLineStyle(org.eclipse.swt.SWT.LINE_DOT); 
+				gc.drawLine( 
+						_left, 
+						_bottom - getCastedComponentImplementation()._measurements.get(i).getNiveauLine(_bottom-_top),
+						_right,
+						_bottom - getCastedComponentImplementation()._measurements.get(i).getNiveauLine(_bottom-_top)
+						);
+				gc.setLineStyle(org.eclipse.swt.SWT.LINE_SOLID); 
+				gc.drawText(
+						getCastedComponentImplementation()._measurements.get(i).getNiveauLineLabel(), 
+						_right, 
+						_bottom - getCastedComponentImplementation()._measurements.get(i).getNiveauLine(_bottom-_top)
+						);        
+			}
+
+			if (_plotStyle==PlotStyle.LinesPoints) {
+				int startX = getCastedComponentImplementation()._measurements.get(i).getScaledX(0,  _minX,_maxX,_right-_left) + _left;
+				int startY = _bottom - getCastedComponentImplementation()._measurements.get(i).getScaledY(0,  _bottom-_top);
+				gc.drawLine( startX, startY-FontSize/2, startX, startY+FontSize/2 );        
+			}
+			if (_plotStyle==PlotStyle.Points) {
+				int startX = getCastedComponentImplementation()._measurements.get(i).getScaledX(0,  _minX,_maxX,_right-_left) + _left;
+				int startY = _bottom - getCastedComponentImplementation()._measurements.get(i).getScaledY(0,  _bottom-_top);
+				gc.drawOval(startX-FontSize/4, startY-FontSize/4, FontSize/2, FontSize/2 );        
+			}
+
+			for (int j=0; j<getCastedComponentImplementation()._measurements.get(i).x.length-1; j++) {
+				int startX = getCastedComponentImplementation()._measurements.get(i).getScaledX(j,  _minX,_maxX,_right-_left) + _left;
+				int startY = _bottom - getCastedComponentImplementation()._measurements.get(i).getScaledY(j,  _bottom-_top);
+				int endX   = getCastedComponentImplementation()._measurements.get(i).getScaledX(j+1,_minX,_maxX,_right-_left) + _left;
+				int endY   = _bottom - getCastedComponentImplementation()._measurements.get(i).getScaledY(j+1,  _bottom-_top);
+
+				switch (_plotStyle) {
+				case Lines: 
+					gc.drawLine( startX, startY, endX, endY );
+					break;
+				case LinesPoints:
+					gc.drawLine( startX, startY, endX, endY );
+					gc.drawLine( endX, endY-FontSize/2, endX, endY+FontSize/2 );
+					break;
+				case Points:
+					gc.drawOval(endX-FontSize/4, endY-FontSize/4, FontSize/2, FontSize/2 );        
+					break;
+				}
+			}
+
+			if (getCastedComponentImplementation()._measurements.get(i).x.length==1) {
+				int centerX = getCastedComponentImplementation()._measurements.get(i).getScaledX(0,  _minX,_maxX,_right-_left) + _left;
+				int centerY = _bottom - getCastedComponentImplementation()._measurements.get(i).getScaledY(0,  _bottom-_top);
+
+				gc.drawLine( centerX-FontSize, centerY-FontSize, centerX+FontSize, centerY+FontSize );
+				gc.drawLine( centerX-FontSize, centerY,          centerX+FontSize, centerY );
+				gc.drawLine( centerX-FontSize, centerY+FontSize, centerX+FontSize, centerY-FontSize );
+				gc.drawLine( centerX,          centerY-FontSize, centerX,          centerY+FontSize );
+			}
+		}
+	}
+
+	private void switchPlotStyleLabel() {
+		switch (_plotStyle) {
+		case Points:      _plotStyle = PlotStyle.Lines;
+		break;
+		case Lines:       _plotStyle = PlotStyle.LinesPoints;
+		break;
+		case LinesPoints: _plotStyle = PlotStyle.Points;
+		break;
+		}
+	}
+
+	private LinePlotterBasisJavaImplementation getCastedComponentImplementation(){
+		if(_component instanceof LinePlotterJavaImplementation){
+			return (LinePlotterBasisJavaImplementation) _component;
+		}
+		return null;
+	}
 }

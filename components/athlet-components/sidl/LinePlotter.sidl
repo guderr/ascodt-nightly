@@ -9,9 +9,18 @@ package de {
 package tum { 
   package charts { 
     
-
+  interface Plotter2d {
+    setTitle( in string title );
+    setXLabel( in string label );
+    setYLabel( in string label );
+    removePlot( in string label );
+    plotPoint( in string label, in double x, in double y );
+    plotCurve( in string label, in double x[], in double y[]);
+    clear();
+  }
+  
   @target = java_local
-  class LinePlotter {
+  class LinePlotter implements-all de.tum.charts.Plotter2d {
   }
   
 
