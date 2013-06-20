@@ -16,7 +16,9 @@ type, extends ( AthletAbstractImplementation ), public :: AthletImplementation
      contains
      procedure,public::createInstance
      procedure,public::destroyInstance
-     
+     procedure,public::setup
+procedure,public::start
+
 end type AthletImplementation
 type(AthletImplementation ),allocatable::Athlet_instance
 contains 
@@ -31,6 +33,16 @@ subroutine destroyInstance(this)
      !put your destructor code here
 end subroutine destroyInstance
 
+subroutine start(this)
+    class( AthletImplementation)::this
+    
+    !put your implementation here
+end subroutine start
+subroutine setup(this)
+    class( AthletImplementation)::this
+    call this%log%info("grs.Athlet","Startring Athlet")
+    !put your implementation here
+end subroutine setup
 
 
 end module  grs_AthletImplementation
