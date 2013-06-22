@@ -9,37 +9,41 @@ package de.tum.logging;
 
 
 public class LoggerJavaImplementation extends LoggerBasisJavaImplementation {
-  public LoggerJavaImplementation( String identifier ) {
-    super(identifier);
-  }
-  
-  
-  public boolean isValid() {
-    // @todo Insert your code here
-    return true;
-  }
+
+	private LoggerUI _ui;
+
+	public LoggerJavaImplementation( String identifier ) {
+		super(identifier);
+		_ui= new LoggerUI(this);
+	}
 
 
-  public boolean hasGUI() {
-    // @todo Insert your code here
-    return false;
-  }
-  
-  
-  public void openGUI() {
-    // @todo Insert your code here
-  }
-  
-  
-  public void closeGUI() {
-    // @todo Insert your code here
-  }
+	public boolean isValid() {
+		// @todo Insert your code here
+		return true;
+	}
 
-  public void destroy(){
-     super.destroy();
-  }
+
+	public boolean hasGUI() {
+		return true;
+	}
+
+
+	public void openGUI() {
+		_ui.setVisible(true);
+	}
+
+
+	public void closeGUI() {
+		_ui.setVisible(false);
+	}
+
+	public void destroy(){
+		super.destroy();
+		_ui.dispose();
+	}
 
 }
- 
+
 
 

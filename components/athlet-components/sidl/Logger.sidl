@@ -19,7 +19,6 @@ package tum {
   class Logger implements-all de.tum.logging.Log {
   }
   
-  
 
 } 
 } 
