@@ -10,13 +10,25 @@ if (JNI_FOUND)
 endif()
 
 include(CMakeForceCompiler)	   
-CMAKE_FORCE_CXX_COMPILER(icl.exe "Intel Cxx Compiler") 
-CMAKE_FORCE_C_COMPILER(icl.exe "Intel C Compiler")     
-CMAKE_FORCE_Fortran_COMPILER(ifort.exe "Intel Fortran Compiler")
+CMAKE_FORCE_CXX_COMPILER(/home/software/intel/bin/icpc "Intel Cxx Compiler") 
+CMAKE_FORCE_C_COMPILER(/home/software/intel/bin/icc "Intel C Compiler")     
+CMAKE_FORCE_Fortran_COMPILER(/home/software/intel/bin/ifort "Intel Fortran Compiler")
 message(STATUS ${CMAKE_Fortran_COMPILER})
 message(STATUS ${CMAKE_CXX_COMPILER})
 message(STATUS ${CMAKE_C_COMPILER})
 enable_language( Fortran ) 
+
+option(EXTERNAL_ATHLET "Use external ATHLET" ON)
+if(EXTERNAL_ATHLET)
+#	include athlet header files *.mod
+	set(ATHLET_PATH "")
+	INCLUDE_DIRECTORIES(/work_fast/atanasoa/Programme/workspace_new/Athlet/LINUX/lin64/modlib64)
+	set(ATHLET_LIBDIR "/work_fast/atanasoa/Programme/workspace_new/Athlet/LINUX/LIBRARIES")
+	find_library(ATHLET_LIB NAMES athlet PATHS ${ATHLET_LIBDIR})
+
+else(EXTERNAL_ATHLET)
+	message(FATAL_ERROR "For this version of QC you need to enable external ATHLET")
+endif(EXTERNAL_ATHLET)
 
 INCLUDE_DIRECTORIES(../../commons)
 INCLUDE_DIRECTORIES(../../src)
@@ -29,6 +41,11 @@ SET(LIBRARY_OUTPUT_PATH  "../../native/lib")
 SET(SRC_COMP_EXEC
 	../../components/java/grs/AthletAbstractImplementation.f90
 	../../src/grs/AthletImplementation.f90 
+	../../src/grs/athlet.f
+	../../src/grs/n3inp.f90
+	../../src/grs/n3inte.f90
+	../../src/grs/n3rest.f90
+	../../src/grs/n3set.f90
 	../../components/java/grs/AthletFProxy.f90
 	../../components/java/grs/AthletC2FProxy.cpp 
 	
@@ -36,6 +53,7 @@ SET(SRC_COMP_EXEC
 
 SET(SRC_COMP_LIB
 	../../components/java/grs/AthletAbstractImplementation.f90
+	../../src/grs/athlet.f
 	../../src/grs/AthletImplementation.f90)
 
 set(SRC_COMP_EXEC
@@ -185,5 +203,7 @@ set(SRC_COMP_LIB
 )
  	 
 ADD_EXECUTABLE(Athlet ${SRC_COMP_EXEC} )
+target_link_libraries(Athlet ${ATHLET_LIB})
 ADD_LIBRARY(Athlet-dev STATIC ${SRC_COMP_LIB} )
 SET_TARGET_PROPERTIES(Athlet PROPERTIES LINKER_LANGUAGE Fortran)
+
