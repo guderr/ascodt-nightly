@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 2.8.6)
 PROJECT(Quabox)
 
-
 find_package(JNI)
 
 if (JNI_FOUND)
@@ -10,22 +9,10 @@ if (JNI_FOUND)
     INCLUDE_DIRECTORIES(${JNI_INCLUDE_DIRS})
 endif()
 
-option(EXTERNAL_ATHLET "Use external ATHLET" ON)
-if(EXTERNAL_ATHLET)
-#	include athlet header files *.mod
-	set(ATHLET_PATH "")
-	INCLUDE_DIRECTORIES(/work_fast/atanasoa/Programme/workspace_new/Athlet/LINUX/lin64/modlib64)
-	set(ATHLET_LIBDIR "/work_fast/atanasoa/Programme/workspace_new/Athlet/LINUX/LIBRARIES")
-	find_library(ATHLET_LIB NAMES athlet PATHS ${ATHLET_LIBDIR})
-
-else(EXTERNAL_ATHLET)
-	message(FATAL_ERROR "For this version of QC you need to enable external ATHLET")
-endif(EXTERNAL_ATHLET)
-
 include(CMakeForceCompiler)	   
-CMAKE_FORCE_CXX_COMPILER(/home/software/intel/bin/icpc "Intel Cxx Compiler") 
-CMAKE_FORCE_C_COMPILER(/home/software/intel/bin/icc "Intel C Compiler")     
-CMAKE_FORCE_Fortran_COMPILER(/home/software/intel/bin/ifort "Intel Fortran Compiler")
+CMAKE_FORCE_CXX_COMPILER(icl.exe "Intel Cxx Compiler") 
+CMAKE_FORCE_C_COMPILER(icl.exe "Intel C Compiler")     
+CMAKE_FORCE_Fortran_COMPILER(ifort.exe "Intel Fortran Compiler")
 message(STATUS ${CMAKE_Fortran_COMPILER})
 message(STATUS ${CMAKE_CXX_COMPILER})
 message(STATUS ${CMAKE_C_COMPILER})
@@ -82,7 +69,5 @@ set(SRC_COMP_LIB
 )
  	 
 ADD_EXECUTABLE(Quabox ${SRC_COMP_EXEC} )
-
-target_link_libraries(Quabox ${ATHLET_LIB})
 ADD_LIBRARY(Quabox-dev STATIC ${SRC_COMP_LIB} )
 SET_TARGET_PROPERTIES(Quabox PROPERTIES LINKER_LANGUAGE Fortran)
