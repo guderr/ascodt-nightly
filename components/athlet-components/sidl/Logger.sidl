@@ -15,6 +15,7 @@ package tum {
   	warn(in string logger,in string message);
   	error(in string logger,in string message);
   }
+  
   @target = java_local
   class Logger implements-all de.tum.logging.Log {
   }

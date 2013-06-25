@@ -11,8 +11,6 @@ package grs {
    	 start();
    }
    
-   
-   
    interface n3inp{
   	n3inp_transferCAI(in string AIKEY[],in string AICONT[]);
   	n3inp_transferCADIMN(in int INM03);
@@ -32,6 +30,7 @@ package grs {
   	n3inp_transferCRCI(in int IQF10[],in string AROD[]);
   	// invoke the function
   	n3inp_invoke();
+  	
   	
      
   }
