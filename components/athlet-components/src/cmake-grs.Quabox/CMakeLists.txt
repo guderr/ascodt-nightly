@@ -10,13 +10,43 @@ if (JNI_FOUND)
 endif()
 
 include(CMakeForceCompiler)	   
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+CMAKE_FORCE_CXX_COMPILER(icpc "Intel Cxx Compiler") 
+CMAKE_FORCE_C_COMPILER(icc "Intel C Compiler")     
+CMAKE_FORCE_Fortran_COMPILER(ifort "Intel Fortran Compiler")
+ELSE()
 CMAKE_FORCE_CXX_COMPILER(icl.exe "Intel Cxx Compiler") 
 CMAKE_FORCE_C_COMPILER(icl.exe "Intel C Compiler")     
 CMAKE_FORCE_Fortran_COMPILER(ifort.exe "Intel Fortran Compiler")
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 message(STATUS ${CMAKE_Fortran_COMPILER})
 message(STATUS ${CMAKE_CXX_COMPILER})
 message(STATUS ${CMAKE_C_COMPILER})
 enable_language( Fortran ) 
+
+option(EXTERNAL_ATHLET "Use external ATHLET" ON)
+if(EXTERNAL_ATHLET)
+#	include athlet header files *.mod
+	find_path(ATHLET_PATH "modlib")
+	INCLUDE_DIRECTORIES(${ATHLET_PATH})
+	set(ATHLET_LIBDIR "/work_fast/atanasoa/Programme/workspace_new/Athlet/LINUX/LIBRARIES")
+	find_library(ATHLET_LIB NAMES athlet PATHS ${ATHLET_LIBDIR})
+
+else(EXTERNAL_ATHLET)
+	message(FATAL_ERROR "For this version of QC you need to enable external ATHLET")
+endif(EXTERNAL_ATHLET)
+
+
+option(EXTERNAL_QUABBOX "Use external ATHLET" ON)
+if(EXTERNAL_QUABBOX)
+	find_path(QUABBOX_INCLUDE_PATH "quabbox/modlib")
+	INCLUDE_DIRECTORIES(${QUABBOX_INCLUDE_PATH})
+	set(QUABBOX_LIBDIR "")
+	find_library(QUABBOX_LIB NAMES quabbox PATHS ${QUABBOX_LIBDIR})
+	
+else(EXTERNAL_QUABBOX)
+	message(FATAL_ERROR "For this version of QC you need to enable external QC lib")
+endif(EXTERNAL_QUABBOX)
 
 INCLUDE_DIRECTORIES(../../commons)
 INCLUDE_DIRECTORIES(../../src)
@@ -69,5 +99,7 @@ set(SRC_COMP_LIB
 )
  	 
 ADD_EXECUTABLE(Quabox ${SRC_COMP_EXEC} )
+target_link_libraries(Quabox ${QUABBOX_LIB} ${ATHLET_LIB})
+
 ADD_LIBRARY(Quabox-dev STATIC ${SRC_COMP_LIB} )
 SET_TARGET_PROPERTIES(Quabox PROPERTIES LINKER_LANGUAGE Fortran)
