@@ -115,470 +115,990 @@ subroutine setup(this)
     !endif
     !put your implementation here
 end subroutine setup
-subroutine n3rest_transferResults(this,&
-	QNKI0I,QNKI0I_len)
-    class( QuaboxImplementation)::this
-    	real(8),intent(inout),dimension(*)::QNKI0I
-	integer,intent(in)::QNKI0I_len
 
+
+subroutine n3set_transferResults(this,&
+    XBOR_out,XBOR_len,&
+    NLAYSK_out,NLAYSK_len,&
+    INLAYS_out,&
+    ISDK_out)
+    USE CKBO,only: XBOR
+    USE CNI,only: NLAYSK,INLAYS,ISDK
+    Use, intrinsic :: iso_c_binding
+    class( QuaboxImplementation)::this
+    real(8),intent(inout),dimension(*)::XBOR_out
+    integer,intent(in)::XBOR_len
+    integer,intent(inout),dimension(*)::NLAYSK_out
+    integer,intent(in)::NLAYSK_len
+    integer,intent(inout)::INLAYS_out
+    integer,intent(inout)::ISDK_out
+    integer::i
+    call this%logger%info("grs.Quabox", "in:n3set_transferResults()")
+    INLAYS_out=INLAYS
+    ISDK_out=ISDK_out
+    !NLAYSK_out=c_loc(NLAYSK)
+    !XBOR_out=c_loc(XBOR)
+    !NLAYSK_len=size(NLAYSK)
+    !XBOR_len=size(XBOR)
+    do i=1,NLAYSK_len
+        NLAYSK_out(i)=NLAYSK(i)
+    end do
+    !print *,"n3set_transferResults:",XBOR
+    do i=1,XBOR_len
+        XBOR_out(i)=XBOR(i)
+    end do
+   call this%logger%info("grs.Quabox", "out:n3set_transferResults()")
+    
+    !!print *,"n3set_transferResults"
+    !put your implementation here
+end subroutine n3set_transferResults
+subroutine n3set_invoke(this,&
+    NSEGS,NSEGS_len,&
+    IZONE,IZONE_len,&
+    NOLAYS,NOLAYS_len,&
+    SV,SV_len,&
+    TT,TT_len,&
+    IQF,IQF_len,&
+    ISEG,ISEG_len,&
+    ISD)
+    USE CCA, only: T
+    class( QuaboxImplementation)::this
+    integer,intent(in),dimension(*)::NSEGS
+    integer,intent(in)::NSEGS_len
+    integer,intent(in),dimension(*)::IZONE
+    integer,intent(in)::IZONE_len
+    integer,intent(in),dimension(*)::NOLAYS
+    integer,intent(in)::NOLAYS_len
+    real(8),intent(in),dimension(*)::SV
+    integer,intent(in)::SV_len
+    real(8),intent(in),dimension(*)::TT
+    integer,intent(in)::TT_len
+    integer,intent(in),dimension(*)::IQF
+    integer,intent(in)::IQF_len
+    integer,intent(in),dimension(*)::ISEG
+    integer,intent(in)::ISEG_len
+    integer,intent(in)::ISD
+    call this%logger%info("grs.Quabox", "in:n3set_invoke()")
+    call n3set(NSEGS,IZONE,NOLAYS,SV,TT,IQF,ISEG,ISD)
+    call this%logger%info("grs.Quabox", "out:n3set_invoke()")
+    !!print *,"n3set_invoke"
+    !put your implementation here
+end subroutine n3set_invoke
+subroutine n3set_transferCNI(this,&
+    NLAYSK_in,NLAYSK_len,&
+    INLAYS_in,&
+    ISDK_in)
+    USE CNI,only:NLAYSK,INLAYS,ISDK
+    class( QuaboxImplementation)::this
+    integer,intent(in),dimension(*)::NLAYSK_in
+    integer,intent(in)::NLAYSK_len
+    integer,intent(in)::INLAYS_in
+    integer,intent(in)::ISDK_in
+    integer::i
+    call this%logger%info("grs.Quabox", "in:n3set_transferCNI()")
+    INLAYS=INLAYS_in
+    ISDK=ISDK_in
+     !put your implementation here
+    if(.not.allocated(NLAYSK)) then
+         allocate(NLAYSK(NLAYSK_len))
+    end if
+
+    do i=1,NLAYSK_len
+        NLAYSK(i)=NLAYSK_in(i)
+    end do
+    call this%logger%info("grs.Quabox", "out:n3set_transferCNI()")
+end subroutine n3set_transferCNI
+subroutine n3set_transferCKBO(this,&
+    LBORON_in,&
+    CBOR_in,CBOR_len,&
+    XBOR_in,XBOR_len)
+    USE CKBO,only: LBORON,CBOR,XBOR
+    class( QuaboxImplementation)::this
+    logical(1),intent(in)::LBORON_in
+    real(8),intent(in),dimension(*)::CBOR_in
+    integer,intent(in)::CBOR_len
+    real(8),intent(in),dimension(*)::XBOR_in
+    integer,intent(in)::XBOR_len
+    integer::i
+    call this%logger%info("grs.Quabox", "in:n3set_transferCKBO()")
+    LBORON=LBORON_in
+    if(.not.allocated(CBOR)) then
+         allocate(CBOR(CBOR_len))
+    end if
+
+    do i=1,CBOR_len
+        CBOR(i)=CBOR_in(i)
+    end do
+    if(.not.allocated(XBOR)) then
+         allocate(XBOR(XBOR_len))
+
+    end if
+    do i=1,XBOR_len
+        XBOR(i)=XBOR_in(i)
+    end do
+    call this%logger%info("grs.Quabox", "out:n3set_transferCKBO()")
+end subroutine n3set_transferCKBO
+subroutine n3set_transferCHRD(this,&
+    LFLUID_in,LFLUID_len)
+    USE CHRD,only: LFLUID
+    class( QuaboxImplementation)::this
+    integer,intent(in),dimension(*)::LFLUID_in
+    integer,intent(in)::LFLUID_len
+    integer::i
+    call this%logger%info("grs.Quabox", "in:n3set_transferCHRD()")
+    if(.not.allocated(LFLUID)) then
+      allocate(LFLUID(LFLUID_len))
+
+    end if
+    do i=1,LFLUID_len
+        LFLUID(i)=LFLUID_in(i)
+    end do
+    call this%logger%info("grs.Quabox", "out:n3set_transferCHRD()")
+    !put your implementation here
+end subroutine n3set_transferCHRD
+subroutine n3set_transferCHCO(this,&
+    HC_in,HC_len)
+    USE CHCO,only:HC
+    class( QuaboxImplementation)::this
+    real(8),intent(in),dimension(*)::HC_in
+    integer,intent(in)::HC_len
+    integer::i
+    call this%logger%info("grs.Quabox", "in:n3set_transferCHCO()")
+    if(.not.allocated(HC)) then
+        allocate(HC(HC_len))
+    end if
+
+    do i=1,HC_len
+        HC(i)=HC_in(i)
+    end do
+    call this%logger%info("grs.Quabox", "out:n3set_transferCHCO()")
+    !!print *,"n3set_transferCHCO"
+    !put your implementation here
+end subroutine n3set_transferCHCO
+subroutine n3set_transferCHCP(this,&
+    POWERN_in,POWERN_len)
+    USE CHCP,only:POWERN
+    class( QuaboxImplementation)::this
+    real(8),intent(in),dimension(*)::POWERN_in
+    integer,intent(in)::POWERN_len
+    integer::i
+    call this%logger%info("grs.Quabox", "in:n3set_transferCHCP()")
+    if(.not.allocated(POWERN)) then
+         allocate(POWERN(POWERN_len))
+
+    end if
+    do i=1,POWERN_len
+        POWERN(i)=POWERN_in(i)
+    end do
+    call this%logger%info("grs.Quabox", "out:n3set_transferCHCP()")	
+    !!print *,"n3set_transferCHCP"
+    !put your implementation here
+end subroutine n3set_transferCHCP
+subroutine n3set_transferCHCD(this,&
+    NKHCO_in,NKHCO_len)
+    use CHCD,only:NKHCO
+    class( QuaboxImplementation)::this
+        integer,intent(in),dimension(*)::NKHCO_in
+    integer,intent(in)::NKHCO_len
+    integer::i
+     call this%logger%info("grs.Quabox", "in:n3set_transferCHCD()")
+     if(.not.allocated(NKHCO)) then
+       allocate(NKHCO(NKHCO_len))
+    end if
+
+    do i=1,NKHCO_len
+        NKHCO(i)=NKHCO_in(i)
+    end do
+     call this%logger%info("grs.Quabox", "out:n3set_transferCHCD()")
+    
+    !put your implementation here
+end subroutine n3set_transferCHCD
+subroutine n3set_transferCGCO(this,&
+    LSGIMP_in,&
+    YNAME_in,YNAME_len)
+    USE CGCO,only: LSGIMP,YNAME
+    class( QuaboxImplementation)::this
+    integer,intent(in)::LSGIMP_in
+    character(*),intent(in),dimension(*)::YNAME_in
+    integer,intent(in)::YNAME_len
+    integer::i
+    call this%logger%info("grs.Quabox", "in:n3set_transferCGCO()")
+    LSGIMP=LSGIMP_in
+     if(.not.allocated(YNAME)) then
+      allocate(YNAME(YNAME_len))
+    end if
+
+    do i=1,YNAME_len
+        YNAME(i)=YNAME_in(i)
+    end do
+
+    call this%logger%info("grs.Quabox", "out:n3set_transferCGCO()")
+    !put your implementation here
+end subroutine n3set_transferCGCO
+subroutine n3set_transferCDTF(this,&
+    XQM_in,XQM_len,&
+    AV_in,AV_len,&
+    ROF_in,ROF_len,&
+    IKS_in)
+    USE CDTF,only:XQM,AV,IKS,ROF
+    class( QuaboxImplementation)::this
+    real(8),intent(in),dimension(*)::XQM_in
+    integer,intent(in)::XQM_len
+    real(8),intent(in),dimension(*)::AV_in
+    integer,intent(in)::AV_len
+    real(8),intent(in),dimension(*)::ROF_in
+    integer,intent(in)::ROF_len
+    integer,intent(in)::IKS_in
+    integer::i
+    IKS=IKS_in
+    call this%logger%info("grs.Quabox", "in:n3set_transferCDTF()")
+    if(.not.allocated(XQM)) then
+       allocate(XQM(XQM_len))
+
+    end if
+    do i=1,XQM_len
+        XQM(i)=XQM_in(i)
+    end do
+
+    if(.not.allocated(AV)) then
+        allocate(AV(AV_len))
+
+    end if
+    do i=1,AV_len
+        AV(i)=AV_in(i)
+    end do
+
+    if(.not.allocated(ROF)) then
+        allocate(ROF(ROF_len))
+
+    end if
+    do i=1,ROF_len
+        ROF(i)=ROF_in(i)
+    end do
+
+     call this%logger%info("grs.Quabox", "out:n3set_transferCDTF()")
+    !!print *,"n3set_transferCDTF"
+    !put your implementation here
+end subroutine n3set_transferCDTF
+subroutine n3set_transferCDSS(this,&
+    NSSITE_in)
+
+    USE CDSS,only:NSSITE
+    class( QuaboxImplementation)::this
+    integer,intent(in)::NSSITE_in
+    call this%logger%info("grs.Quabox", "in:n3set_transferCDSS()")
+    NSSITE=NSSITE_in
+    call this%logger%info("grs.Quabox", "out:n3set_transferCDSS()")
+    !!print *,"n3set_transferCDSS"
+    !put your implementation here
+end subroutine n3set_transferCDSS
+subroutine n3set_transferCDQ(this,&
+    QI_in,QI_len)
+    use CDQ,only: QI
+    class( QuaboxImplementation)::this
+    real(8),intent(in),dimension(*)::QI_in
+    integer,intent(in)::QI_len
+    integer::i
+    call this%logger%info("grs.Quabox", "in:n3set_transferCDQ()")
+    if(.not.allocated(QI)) then
+        allocate(QI(QI_len))
+    end if
+
+    do i=1,QI_len
+        QI(i)=QI_in(i)
+    end do
+    call this%logger%info("grs.Quabox", "out:n3set_transferCDQ()")
+    !!print *,"n3set_transferCDQ"
+    !put your implementation here
+end subroutine n3set_transferCDQ
+subroutine n3set_transferCDPR(this,&
+    TFHT_in,TFHT_len,&
+    TL_in,TL_len)
+    USE CDPR,only: TFHT,TL
+    class( QuaboxImplementation)::this
+    real(8),intent(in),dimension(*)::TFHT_in
+    integer,intent(in)::TFHT_len
+    real(8),intent(in),dimension(*)::TL_in
+    integer,intent(in)::TL_len
+    integer::i
+    call this%logger%info("grs.Quabox", "in:n3set_transferCDPR()")
+    if(.not.allocated(TFHT)) then
+        allocate(TFHT(TFHT_len))
+
+    end if
+    do i=1,TFHT_len
+        TFHT(i)=TFHT_in(i)
+    end do
+    if(.not.allocated(TL)) then
+         allocate(TL(TL_len))
+
+    end if
+    do i=1,TL_len
+        TL(i)=TL_in(i)
+    end do
+    call this%logger%info("grs.Quabox", "out:n3set_transferCDPR()")
+    !!print *,"n3set_transferCDPR"
+    !put your implementation here
+end subroutine n3set_transferCDPR
+subroutine n3set_transferCDNW(this,&
+    IILO_in,IILO_len,&
+    IIRO_in,IIRO_len)
+    USE CDNW,only: IILO,IIRO
+    class( QuaboxImplementation)::this
+    integer,intent(in),dimension(*)::IILO_in
+    integer,intent(in)::IILO_len
+    integer,intent(in),dimension(*)::IIRO_in
+    integer,intent(in)::IIRO_len
+    integer::i
+    
+    call this%logger%info("grs.Quabox", "in:n3set_transferCDNW()")
+    if(.not.allocated(IILO)) then
+        allocate(IILO(IILO_len))
+    end if
+
+    do i=1,IILO_len
+        IILO(i)=IILO_in(i)
+    end do
+    if(.not.allocated(IIRO)) then
+       allocate(IIRO(IIRO_len))
+    end if
+
+    do i=1,IIRO_len
+        IIRO(i)=IIRO_in(i)
+    end do 
+    
+    call this%logger%info("grs.Quabox", "out:n3set_transferCDNW()")
+    !!print *,"n3set_transferCDNW"
+    !put your implementation here
+end subroutine n3set_transferCDNW
+subroutine n3set_transferCDML(this,&
+    IMLK_in,IMLK_len,&
+    IML_in,IML_len)
+    USE CDML,only: IMLK,IML
+    class( QuaboxImplementation)::this
+    integer,intent(in),dimension(*)::IMLK_in
+    integer,intent(in)::IMLK_len
+    integer,intent(in),dimension(*)::IML_in
+    integer,intent(in)::IML_len
+    integer::i
+    call this%logger%info("grs.Quabox", "in:n3set_transferCDML()")
+    if(.not.allocated(IMLK)) then
+       allocate(IMLK(IMLK_len))
+
+    end if
+     do i=1,IMLK_len
+        IMLK(i)=IMLK_in(i)
+    end do
+     if(.not.allocated(IML)) then
+        allocate(IML(IML_len))
+
+    end if
+     do i=1,IML_len
+        IML(i)=IML_in(i)
+    end do
+    call this%logger%info("grs.Quabox", "out:n3set_transferCDML()")
+    !put your implementation here
+end subroutine n3set_transferCDML
+subroutine n3set_transferCDGE(this,&
+    VOLI_in,VOLI_len,&
+    ZTI_in,ZTI_len,&
+    ZBI_in,ZBI_len)
+    USE CDGE,only:VOLI,ZTI,ZBI
+
+    class( QuaboxImplementation)::this
+    real(8),intent(in),dimension(*)::VOLI_in
+    integer,intent(in)::VOLI_len
+    real(8),intent(in),dimension(*)::ZTI_in
+    integer,intent(in)::ZTI_len
+    real(8),intent(in),dimension(*)::ZBI_in
+    integer,intent(in)::ZBI_len
+    integer::i
+    call this%logger%info("grs.Quabox", "in:n3set_transferCDGE()")
+    if(.not.allocated(VOLI)) then
+        allocate(VOLI(VOLI_len))
+
+    end if
+    do i=1,VOLI_len
+        VOLI(i)=VOLI_in(i)
+    end do
+    if(.not.allocated(ZTI)) then
+       allocate(ZTI(ZTI_len))
+
+    end if
+    do i=1,ZTI_len
+       ZTI(i)=ZTI_in(i)
+    end do
+    if(.not.allocated(ZBI)) then
+         allocate(ZBI(ZBI_len))
+    end if
+
+    do i=1,ZBI_len
+       ZBI(i)=ZBI_in(i)
+    end do
+    call this%logger%info("grs.Quabox", "out:n3set_transferCDGE()")
+    !!print *,"n3set_transferCDGE"
+    !put your implementation here
+end subroutine n3set_transferCDGE
+subroutine n3set_transferCCC(this,&
+    KEYA1_in)
+    USE CCC,only: KEYA1
+    class( QuaboxImplementation)::this
+    integer,intent(in)::KEYA1_in
+    call this%logger%info("grs.Quabox", "in:n3set_transferCCC()")
+
+    KEYA1=KEYA1_in
+    call this%logger%info("grs.Quabox", "out:n3set_transferCCC()")
+    !!print *,"n3set_transferCCC out"
+
+    !put your implementation here
+end subroutine n3set_transferCCC
+subroutine n3rest_transferResults(this,&
+    QNKI0I_out,QNKI0I_len)
+    USE CNR,only:QNKI0I
+    class( QuaboxImplementation)::this
+    real(8),intent(inout),dimension(*)::QNKI0I_out
+    integer,intent(in)::QNKI0I_len
+    integer::i
+    do i=1,QNKI0I_len
+        QNKI0I_out(i)=QNKI0I(i)
+    end do
     !put your implementation here
 end subroutine n3rest_transferResults
 subroutine n3rest_invoke(this,&
-	IDIR,&
-	IFORM,&
-	IUN)
+    IDIR,&
+    IFORM,&
+    IUN)
+    USE CCC,only:KEYOUT
     class( QuaboxImplementation)::this
-    	integer,intent(in)::IDIR
-	integer,intent(in)::IFORM
-	integer,intent(in)::IUN
-
+    integer,intent(in)::IDIR
+    integer,intent(in)::IFORM
+    integer,intent(in)::IUN
+    call n3rest(IDIR,IFORM,IUN)
+    !CALL SOUT
+    if (KEYOUT.eq.1) then
+        CALL SOSTEP
+        !call SOPLPO
+        CALL AOUTPT
+        KEYOUT=1
+    endif
+    !!print *,"invoking n3rest"
     !put your implementation here
 end subroutine n3rest_invoke
 subroutine n3rest_transferCNI(this,&
-	NKSGMX)
+    NKSGMX_in)
+    USE CNI,only:NKSGMX
     class( QuaboxImplementation)::this
-    	integer,intent(in)::NKSGMX
+    integer,intent(in)::NKSGMX_in
+    NKSGMX=NKSGMX_in
 
     !put your implementation here
 end subroutine n3rest_transferCNI
 subroutine n3rest_transferCNR(this,&
-	QNKI0I,QNKI0I_len)
+    QNKI0I_in,QNKI0I_len)
+    USE CNR,only:QNKI0I
     class( QuaboxImplementation)::this
-    	real(8),intent(in),dimension(*)::QNKI0I
-	integer,intent(in)::QNKI0I_len
+    real(8),intent(in),dimension(*)::QNKI0I_in
+    integer,intent(in)::QNKI0I_len
+    integer::i
+     if(.not.allocated(QNKI0I)) then
+        allocate(QNKI0I(QNKI0I_len))
+    end if
 
+    do i=1,QNKI0I_len
+        QNKI0I(i)=QNKI0I_in(i)
+    end do
     !put your implementation here
 end subroutine n3rest_transferCNR
 subroutine n3rest_transferCNK(this,&
-	INITIA,&
-	QD,QD_len)
+    INITIA_in,&
+    QD_in,QD_len)
+    USE CNK,only: INITIA,QD
     class( QuaboxImplementation)::this
-    	integer,intent(in)::INITIA
-	real(8),intent(in),dimension(*)::QD
-	integer,intent(in)::QD_len
+    integer,intent(in)::INITIA_in
+    real(8),intent(in),dimension(*)::QD_in
+    integer,intent(in)::QD_len
+    integer::i
+    INITIA=INITIA_in
+    if(.not.allocated(QD)) then
+       allocate(QD(QD_len))
+    end if
+
+    do i=1,QD_len
+        QD(i)=QD_in(i)
+    end do
 
     !put your implementation here
 end subroutine n3rest_transferCNK
 subroutine n3rest_transferCCA(this,&
-	L3DNK)
+    L3DNK_in)
+    USE CCA,only: L3DNK
     class( QuaboxImplementation)::this
-    	integer,intent(in)::L3DNK
+    integer,intent(in)::L3DNK_in
+    L3DNK=L3DNK_in
 
     !put your implementation here
 end subroutine n3rest_transferCCA
-subroutine n3set_transferResults(this,&
-	XBOR,XBOR_len,&
-	NLAYSK,NLAYSK_len,&
-	INLAYS,&
-	ISDK)
-    class( QuaboxImplementation)::this
-    	real(8),intent(inout),dimension(*)::XBOR
-	integer,intent(in)::XBOR_len
-	integer,intent(inout),dimension(*)::NLAYSK
-	integer,intent(in)::NLAYSK_len
-	integer,intent(inout)::INLAYS
-	integer,intent(inout)::ISDK
-
-    !put your implementation here
-end subroutine n3set_transferResults
-subroutine n3set_invoke(this,&
-	NSEGS,NSEGS_len,&
-	IZONE,IZONE_len,&
-	NOLAYS,NOLAYS_len,&
-	SV,SV_len,&
-	TT,TT_len,&
-	IQF,IQF_len,&
-	ISEG,ISEG_len,&
-	ISD)
-    class( QuaboxImplementation)::this
-    	integer,intent(in),dimension(*)::NSEGS
-	integer,intent(in)::NSEGS_len
-	integer,intent(in),dimension(*)::IZONE
-	integer,intent(in)::IZONE_len
-	integer,intent(in),dimension(*)::NOLAYS
-	integer,intent(in)::NOLAYS_len
-	real(8),intent(in),dimension(*)::SV
-	integer,intent(in)::SV_len
-	real(8),intent(in),dimension(*)::TT
-	integer,intent(in)::TT_len
-	integer,intent(in),dimension(*)::IQF
-	integer,intent(in)::IQF_len
-	integer,intent(in),dimension(*)::ISEG
-	integer,intent(in)::ISEG_len
-	integer,intent(in)::ISD
-
-    !put your implementation here
-end subroutine n3set_invoke
-subroutine n3set_transferCNI(this,&
-	NLAYSK,NLAYSK_len,&
-	INLAYS,&
-	ISDK)
-    class( QuaboxImplementation)::this
-    	integer,intent(in),dimension(*)::NLAYSK
-	integer,intent(in)::NLAYSK_len
-	integer,intent(in)::INLAYS
-	integer,intent(in)::ISDK
-
-    !put your implementation here
-end subroutine n3set_transferCNI
-subroutine n3set_transferCKBO(this,&
-	LBORON,&
-	CBOR,CBOR_len,&
-	XBOR,XBOR_len)
-    class( QuaboxImplementation)::this
-    	logical,intent(in)::LBORON
-	real(8),intent(in),dimension(*)::CBOR
-	integer,intent(in)::CBOR_len
-	real(8),intent(in),dimension(*)::XBOR
-	integer,intent(in)::XBOR_len
-
-    !put your implementation here
-end subroutine n3set_transferCKBO
-subroutine n3set_transferCHRD(this,&
-	LFLUID,LFLUID_len)
-    class( QuaboxImplementation)::this
-    	integer,intent(in),dimension(*)::LFLUID
-	integer,intent(in)::LFLUID_len
-
-    !put your implementation here
-end subroutine n3set_transferCHRD
-subroutine n3set_transferCHCO(this,&
-	HC,HC_len)
-    class( QuaboxImplementation)::this
-    	real(8),intent(in),dimension(*)::HC
-	integer,intent(in)::HC_len
-
-    !put your implementation here
-end subroutine n3set_transferCHCO
-subroutine n3set_transferCHCP(this,&
-	POWERN,POWERN_len)
-    class( QuaboxImplementation)::this
-    	real(8),intent(in),dimension(*)::POWERN
-	integer,intent(in)::POWERN_len
-
-    !put your implementation here
-end subroutine n3set_transferCHCP
-subroutine n3set_transferCHCD(this,&
-	NKHCO,NKHCO_len)
-    class( QuaboxImplementation)::this
-    	integer,intent(in),dimension(*)::NKHCO
-	integer,intent(in)::NKHCO_len
-
-    !put your implementation here
-end subroutine n3set_transferCHCD
-subroutine n3set_transferCGCO(this,&
-	LSGIMP,&
-	YNAME,YNAME_len)
-    class( QuaboxImplementation)::this
-    	integer,intent(in)::LSGIMP
-	character(*),intent(in),dimension(*)::YNAME
-	integer,intent(in)::YNAME_len
-
-    !put your implementation here
-end subroutine n3set_transferCGCO
-subroutine n3set_transferCDTF(this,&
-	XQM,XQM_len,&
-	AV,AV_len,&
-	ROF,ROF_len,&
-	IKS)
-    class( QuaboxImplementation)::this
-    	real(8),intent(in),dimension(*)::XQM
-	integer,intent(in)::XQM_len
-	real(8),intent(in),dimension(*)::AV
-	integer,intent(in)::AV_len
-	real(8),intent(in),dimension(*)::ROF
-	integer,intent(in)::ROF_len
-	integer,intent(in)::IKS
-
-    !put your implementation here
-end subroutine n3set_transferCDTF
-subroutine n3set_transferCDSS(this,&
-	NSSITE)
-    class( QuaboxImplementation)::this
-    	integer,intent(in)::NSSITE
-
-    !put your implementation here
-end subroutine n3set_transferCDSS
-subroutine n3set_transferCDQ(this,&
-	QI,QI_len)
-    class( QuaboxImplementation)::this
-    	real(8),intent(in),dimension(*)::QI
-	integer,intent(in)::QI_len
-
-    !put your implementation here
-end subroutine n3set_transferCDQ
-subroutine n3set_transferCDPR(this,&
-	TFHT,TFHT_len,&
-	TL,TL_len)
-    class( QuaboxImplementation)::this
-    	real(8),intent(in),dimension(*)::TFHT
-	integer,intent(in)::TFHT_len
-	real(8),intent(in),dimension(*)::TL
-	integer,intent(in)::TL_len
-
-    !put your implementation here
-end subroutine n3set_transferCDPR
-subroutine n3set_transferCDNW(this,&
-	IILO,IILO_len,&
-	IIRO,IIRO_len)
-    class( QuaboxImplementation)::this
-    	integer,intent(in),dimension(*)::IILO
-	integer,intent(in)::IILO_len
-	integer,intent(in),dimension(*)::IIRO
-	integer,intent(in)::IIRO_len
-
-    !put your implementation here
-end subroutine n3set_transferCDNW
-subroutine n3set_transferCDML(this,&
-	IMLK,IMLK_len,&
-	IML,IML_len)
-    class( QuaboxImplementation)::this
-    	integer,intent(in),dimension(*)::IMLK
-	integer,intent(in)::IMLK_len
-	integer,intent(in),dimension(*)::IML
-	integer,intent(in)::IML_len
-
-    !put your implementation here
-end subroutine n3set_transferCDML
-subroutine n3set_transferCDGE(this,&
-	VOLI,VOLI_len,&
-	ZTI,ZTI_len,&
-	ZBI,ZBI_len)
-    class( QuaboxImplementation)::this
-    	real(8),intent(in),dimension(*)::VOLI
-	integer,intent(in)::VOLI_len
-	real(8),intent(in),dimension(*)::ZTI
-	integer,intent(in)::ZTI_len
-	real(8),intent(in),dimension(*)::ZBI
-	integer,intent(in)::ZBI_len
-
-    !put your implementation here
-end subroutine n3set_transferCDGE
-subroutine n3set_transferCCC(this,&
-	KEYA1)
-    class( QuaboxImplementation)::this
-    	integer,intent(in)::KEYA1
-
-    !put your implementation here
-end subroutine n3set_transferCCC
 subroutine n3inte_transferResults(this,&
-	POWERN,POWERN_len,&
-	QNKI0,QNKI0_len,&
-	INITIA)
+    POWERN_out,POWERN_len,&
+    QNKI0_out,QNKI0_len,&
+    INITIA_out)
+    USE CHCP, only : POWERN
+    USE CNR, only : QNKI0
+    USE CNK,only : INITIA
     class( QuaboxImplementation)::this
-    	real(8),intent(inout),dimension(*)::POWERN
-	integer,intent(in)::POWERN_len
-	real(8),intent(inout),dimension(*)::QNKI0
-	integer,intent(in)::QNKI0_len
-	integer,intent(inout)::INITIA
-
+        real(8),intent(inout),dimension(*)::POWERN_out
+    integer,intent(in)::POWERN_len
+    real(8),intent(inout),dimension(*)::QNKI0_out
+    integer,intent(in)::QNKI0_len
+    integer,intent(inout)::INITIA_out
+    integer::i
+    INITIA_OUT=INITIA
+    do i=1,QNKI0_len
+        QNKI0_out(i)=QNKI0(i)
+    end do
+    do i=1,POWERN_len
+        POWERN_out(i)=POWERN(i)
+    end do
     !put your implementation here
 end subroutine n3inte_transferResults
 subroutine n3inte_invoke(this,&
-	ITERNB,&
-	LINIK,&
-	QNKI,QNKI_len)
+    ITERNB,&
+    LINIK,&
+    QNKI,QNKI_len)
+    USE CCC,only:KEYOUT
+    USE CCA,only:T
     class( QuaboxImplementation)::this
-    	integer,intent(inout)::ITERNB
-	logical,intent(in)::LINIK
-	real(8),intent(inout),dimension(*)::QNKI
-	integer,intent(in)::QNKI_len
+    integer,intent(inout)::ITERNB
+    logical(1),intent(in)::LINIK
+    real(8),intent(inout),dimension(*)::QNKI
+    integer,intent(in)::QNKI_len
+    integer::copy
+    real(8)::copy_of_t
+    !if(KEYOUT.eq.1)
+    copy= KEYOUT
+    copy_of_t=T
+    CALL AOUTPT
+    KEYOUT=copy
+    T=copy_of_t
+    call n3inte(ITERNB,LINIK,QNKI)
 
+
+    !CALL SOSTPO(1,0,0)
+
+
+    !CALL SOPLOT
+    !!print *,"invoking n3inte"
     !put your implementation here
 end subroutine n3inte_invoke
 subroutine n3inte_transferCNR(this,&
-	QNKI0,QNKI0_len)
+    QNKI0_in,QNKI0_len)
+    USE CNR,only:QNKI0
     class( QuaboxImplementation)::this
-    	real(8),intent(in),dimension(*)::QNKI0
-	integer,intent(in)::QNKI0_len
 
+    real(8),intent(in),dimension(*)::QNKI0_in
+    integer,intent(in)::QNKI0_len
+    integer::i
+     if(.not.allocated(QNKI0)) then
+       allocate(QNKI0(QNKI0_len))
+    end if
+
+    do i=1,QNKI0_len
+        QNKI0(i)=QNKI0_in(i)
+    end do
     !put your implementation here
 end subroutine n3inte_transferCNR
 subroutine n3inte_transferCNK(this,&
-	INITIA)
+    INITIA_in)
+    USE CNK,only: INITIA
     class( QuaboxImplementation)::this
-    	integer,intent(in)::INITIA
+    integer,intent(in)::INITIA_in
+    INITIA=INITIA_in
 
     !put your implementation here
 end subroutine n3inte_transferCNK
 subroutine n3inte_transferCNI(this,&
-	NKSGMX,&
-	NNRODK)
+    NKSGMX_in,&
+    NNRODK_in)
+    USE CNI, only: NKSGMX,NNRODK
     class( QuaboxImplementation)::this
-    	integer,intent(in)::NKSGMX
-	integer,intent(in)::NNRODK
-
+    integer,intent(in)::NKSGMX_in
+    integer,intent(in)::NNRODK_in
+    NKSGMX=NKSGMX_in
+    NNRODK=NNRODK_in
     !put your implementation here
 end subroutine n3inte_transferCNI
 subroutine n3inte_transferCHCP(this,&
-	IAHO,IAHO_len,&
-	LHCU,&
-	LHLENG,&
-	POWERN,POWERN_len)
+    IAHO_in,IAHO_len,&
+    LHCU_in,&
+    LHLENG_in,&
+    POWERN_in,POWERN_len)
+    USE CHCP,only:IAHO,LHCU,LHLENG,POWERN
     class( QuaboxImplementation)::this
-    	integer,intent(in),dimension(*)::IAHO
-	integer,intent(in)::IAHO_len
-	integer,intent(in)::LHCU
-	integer,intent(in)::LHLENG
-	real(8),intent(inout),dimension(*)::POWERN
-	integer,intent(in)::POWERN_len
+    integer,intent(in),dimension(*)::IAHO_in
+    integer,intent(in)::IAHO_len
+    integer,intent(in)::LHCU_in
+    integer,intent(in)::LHLENG_in
+    real(8),intent(inout),dimension(*)::POWERN_in
+    integer,intent(in)::POWERN_len
+    integer::i
+    if(.not.allocated(IAHO)) then
+        allocate(IAHO(IAHO_len))
+    end if
+    if(.not.allocated(POWERN)) then
+        allocate(POWERN(POWERN_len))
+    end if
+
+    do i=1,IAHO_len
+        IAHO(i)=IAHO_in(i)
+    end do
+    do i=1,POWERN_len
+        POWERN(i)=POWERN_in(i)
+    end do
+    LHCU=LHCU_in
+    LHLENG=LHLENG_in
 
     !put your implementation here
 end subroutine n3inte_transferCHCP
 subroutine n3inte_transferCHCO(this,&
-	HC,HC_len)
+    HC_in,HC_len)
+    USE CHCO,only:HC
     class( QuaboxImplementation)::this
-    	real(8),intent(in),dimension(*)::HC
-	integer,intent(in)::HC_len
+    real(8),intent(in),dimension(*)::HC_in
+    integer,intent(in)::HC_len
+    integer::i
+    if(.not.allocated(HC)) then
+         allocate(HC(HC_len))
+    end if
 
+    do i=1,HC_len
+        HC(i)=HC_in(i)
+    end do
     !put your implementation here
 end subroutine n3inte_transferCHCO
 subroutine n3inte_transferCHCD(this,&
-	NKHCO,NKHCO_len)
+    NKHCO_in,NKHCO_len)
+    USE CHCD,only:NKHCO
     class( QuaboxImplementation)::this
-    	integer,intent(in),dimension(*)::NKHCO
-	integer,intent(in)::NKHCO_len
+    integer,intent(in),dimension(*)::NKHCO_in
+    integer,intent(in)::NKHCO_len
+    integer::i
+    if(.not.allocated(NKHCO)) then
+        allocate(NKHCO(NKHCO_len))
+    end if
+
+    do i=1,NKHCO_len
+        NKHCO(i)=NKHCO_in(i)
+    end do
 
     !put your implementation here
 end subroutine n3inte_transferCHCD
 subroutine n3inte_transferCGCO(this,&
-	TE)
+    TE_in)
+    USE CGCO, only: TE
     class( QuaboxImplementation)::this
-    	real(8),intent(in)::TE
+    real(8),intent(in)::TE_in
+    TE=TE_in
+
 
     !put your implementation here
 end subroutine n3inte_transferCGCO
 subroutine n3inte_transferCCC(this,&
-	KEYA1,&
-	KEYE,&
-	KEYOUT)
+    KEYA1_in,&
+    KEYE_in,&
+    KEYOUT_in)
+    USE CCC, only: KEYA1,KEYE,KEYOUT
     class( QuaboxImplementation)::this
-    	integer,intent(in)::KEYA1
-	integer,intent(in)::KEYE
-	integer,intent(in)::KEYOUT
+    integer,intent(in)::KEYA1_in
+    integer,intent(in)::KEYE_in
+    integer,intent(in)::KEYOUT_in
+    KEYA1=KEYA1_in
+    KEYE=KEYE_in
 
+    KEYOUT=KEYOUT_in
     !put your implementation here
 end subroutine n3inte_transferCCC
 subroutine n3inte_transferCCAC(this,&
-	TFFKT,&
-	TFFKT0)
+    TFFKT_in,&
+    TFFKT0_in)
+    USE CCAC, only: TFFKT,TFFKT0
     class( QuaboxImplementation)::this
-    	real(8),intent(in)::TFFKT
-	real(8),intent(in)::TFFKT0
-
+    real(8),intent(in)::TFFKT_in
+    real(8),intent(in)::TFFKT0_in
+    TFFKT=TFFKT_in
+    TFFKT0=TFFKT0_in
     !put your implementation here
 end subroutine n3inte_transferCCAC
 subroutine n3inte_transferCCA(this,&
-	L3DNK,&
-	DT,&
-	T)
-    class( QuaboxImplementation)::this
-    	integer,intent(in)::L3DNK
-	real(8),intent(in)::DT
-	real(8),intent(in)::T
+    L3DNK_in,&
+    DT_in,&
+    T_in)
+    USE CCA, only: L3DNK,DT,T
 
+    class( QuaboxImplementation)::this
+    integer,intent(in)::L3DNK_in
+    real(8),intent(in)::DT_in
+    real(8),intent(in)::T_in
+    L3DNK=L3DNK_in
+    DT=DT_in
+    T=T_in
+    print *,"T:",T
     !put your implementation here
 end subroutine n3inte_transferCCA
 subroutine n3inp_invoke(this)
+    USE CN3D, ONLY: N2XY, N3DZ
+
     class( QuaboxImplementation)::this
-    
+    integer::IR
+    CHARACTER*1 CH1
+    CHARACTER*2 CH2
+    CHARACTER*3 CH3
+     print *,"invoking n3inp"
+     call n3inp
+     CALL AOUTPT
+
+     CALL SOCMP(1,0,0,1,'Q/C       ',0)
+     CALL SOCMP(2,0,0,0,'FLUIDDENS ',0)
+     CALL SOCMP(3,0,1,0,'BLOCK1'    ,0)
+     DO IR =1,N2XY
+
+            IF(IR.LT.10) THEN
+               WRITE(CH1,'(I1)') IR
+               CALL SOCMP(4,N3DZ,1,1,'CHANNEL'//CH1,0)
+            ELSEIF(IR.LT.100) THEN
+               WRITE(CH2,'(I2)') IR
+               CALL SOCMP(4,N3DZ,1,1,'CHANNEL'//CH2,0)
+            ELSE
+               WRITE(CH3,'(I3)') IR
+               CALL SOCMP(4,N3DZ,1,1,'CHANNEL'//CH3,0)
+            ENDIF
+
+      enddo
+       CALL SOCMP(2,0,0,0,'FUELTEMP  ',0)
+         CALL SOCMP(3,0,1,0,'BLOCK1'    ,0)
+         DO IR =1,N2XY
+            IF(IR.LT.10) THEN
+               WRITE(CH1,'(I1)') IR
+               CALL SOCMP(4,N3DZ,1,1,'ROD'//CH1,0)
+            ELSEIF(IR.LT.100) THEN
+               WRITE(CH2,'(I2)') IR
+               CALL SOCMP(4,N3DZ,1,1,'ROD'//CH2,0)
+            ELSE
+               WRITE(CH3,'(I3)') IR
+              CALL SOCMP(4,N3DZ,1,1,'ROD'//CH3,0)
+            ENDIF
+            enddo
+     CALL SOCMP(2,0,0,0,'GENERAL   ',0.D0)
+     CALL SOCMP(3,0,1,0,'BLOCK1',0.D0)
+     CALL SOCMP(4,1,1,1,'FISPOWER  ',0)
+     CALL SOCMP(4,1,1,1,'TOTPOWER  ',0)
+     CALL SOCMP(4,1,1,1,'REACTIVITY',0)
+     CALL SOCMP(4,1,1,1,'TFUELMEAN ',0)
+     CALL SOCMP(4,1,1,1,'COOLDENSM ',0)
+     CALL SOCMP(4,1,1,1,'TFUELMAX  ',0)
+     CALL SOCMP(4,1,1,1,'BORCOREM  ',0)
+
+     CALL SOUT
+     print *,"n3inp called"
+     !!print *,"n3inp invoke"
     !put your implementation here
 end subroutine n3inp_invoke
 subroutine n3inp_transferCRCI(this,&
-	IQF10,IQF10_len,&
-	AROD,AROD_len)
+    IQF10_in,IQF10_len,&
+    AROD_in,AROD_len)
+    USE CRCI, only: IQF10,AROD
     class( QuaboxImplementation)::this
-    	integer,intent(in),dimension(*)::IQF10
-	integer,intent(in)::IQF10_len
-	character(*),intent(in),dimension(*)::AROD
-	integer,intent(in)::AROD_len
+    integer,intent(in),dimension(*)::IQF10_in
+    integer,intent(in)::IQF10_len
+    character(*),intent(in),dimension(*)::AROD_in
+    integer,intent(in)::AROD_len
+    integer::i
+    if(.not.allocated(IQF10)) then
+        allocate(IQF10(IQF10_len))
+    end if
 
+    if(.not.allocated(AROD)) then
+       allocate(AROD(AROD_len))
+    end if
+
+    do i=1,IQF10_len
+        IQF10(i)=IQF10_in(i)
+    end do
+    do i=1,AROD_len
+        AROD(i)=AROD_in(i)
+    end do
+    !!print *,"n3inp_transferCRCI"
     !put your implementation here
 end subroutine n3inp_transferCRCI
 subroutine n3inp_transferCHCP(this,&
-	NRODS,&
-	IHVMAX)
+    NRODS_in,IHVMAX_in)
+    USE CHCP, only: NRODS,IHVMAX
     class( QuaboxImplementation)::this
-    	integer,intent(in)::NRODS
-	integer,intent(in)::IHVMAX
-
+    integer,intent(in)::NRODS_in
+    integer,intent(in)::IHVMAX_in
+    NRODS=NRODS_in
+    IHVMAX=IHVMAX_in
+    !!print *,"n3inp_transferCHCP"
     !put your implementation here
 end subroutine n3inp_transferCHCP
 subroutine n3inp_transferCHCD(this,&
-	NHOBJ,&
-	ACOMP0,ACOMP0_len,&
-	ANAMH,ANAMH_len,&
-	AOLH,AOLH_len,&
-	AORH,AORH_len,&
-	FPROD,FPROD_len)
+    NHOBJ_in,&
+    ACOMP0_in,ACOMP0_len,&
+    ANAMH_in,ANAMH_len,&
+    AOLH_in,AOLH_len,&
+    AORH_in,AORH_len,&
+    FPROD_in,FPROD_len)
+    USE CHCD, only: NHOBJ,ACOMP0,ANAMH,AOLH,AORH,FPROD
     class( QuaboxImplementation)::this
-    	integer,intent(in)::NHOBJ
-	character(*),intent(in),dimension(*)::ACOMP0
-	integer,intent(in)::ACOMP0_len
-	character(*),intent(in),dimension(*)::ANAMH
-	integer,intent(in)::ANAMH_len
-	character(*),intent(in),dimension(*)::AOLH
-	integer,intent(in)::AOLH_len
-	character(*),intent(in),dimension(*)::AORH
-	integer,intent(in)::AORH_len
-	real(8),intent(in),dimension(*)::FPROD
-	integer,intent(in)::FPROD_len
+    integer,intent(in)::NHOBJ_in
+    character(*),intent(in),dimension(*)::ACOMP0_in
+    integer,intent(in)::ACOMP0_len
+    character(*),intent(in),dimension(*)::ANAMH_in
+    integer,intent(in)::ANAMH_len
+    character(*),intent(in),dimension(*)::AOLH_in
+    integer,intent(in)::AOLH_len
+    character(*),intent(in),dimension(*)::AORH_in
+    integer,intent(in)::AORH_len
+    real(8),intent(in),dimension(*)::FPROD_in
+    integer,intent(in)::FPROD_len
+    integer::i
+    NHOBJ=NHOBJ_in
+    if(.not.allocated(ACOMP0)) then
+       allocate(ACOMP0(ACOMP0_len))
 
+    end if
+    if(.not.allocated(ANAMH)) then
+        allocate(ANAMH(ANAMH_len))
+
+    end if
+    if(.not.allocated(AOLH)) then
+       allocate(AOLH(AOLH_len))
+
+    end if
+    if(.not.allocated(AORH)) then
+       allocate(AORH(AORH_len))
+
+    end if
+    if(.not.allocated(FPROD)) then
+      allocate(FPROD(FPROD_len))
+
+    end if
+    do i=1,ACOMP0_len
+        ACOMP0(i)=ACOMP0_in(i)
+    end do
+    do i=1,AOLH_len
+        AOLH(i)= AOLH_in(i)
+    end do
+    do i=1,AORH_len
+        AORH(i)= AORH_in(i)
+    end do
+    do i=1,ANAMH_len
+        ANAMH(i)= ANAMH_in(i)
+    end do
+    do i=1,FPROD_len
+        FPROD(i)=FPROD_in(i)
+    end do
+    !!print *,"n3inp_transferCHCD"
     !put your implementation here
 end subroutine n3inp_transferCHCD
 subroutine n3inp_transferCDNW(this,&
-	IILO,IILO_len,&
-	IIRO,IIRO_len)
+    IILO_in,IILO_len,&
+    IIRO_in,IIRO_len)
+    USE CDNW, only: IILO,IIRO
     class( QuaboxImplementation)::this
-    	integer,intent(in),dimension(*)::IILO
-	integer,intent(in)::IILO_len
-	integer,intent(in),dimension(*)::IIRO
-	integer,intent(in)::IIRO_len
+    integer,intent(in),dimension(*)::IILO_in
+    integer,intent(in)::IILO_len
+    integer,intent(in),dimension(*)::IIRO_in
+    integer,intent(in)::IIRO_len
+    integer::i
+    if(.not.allocated(IILO)) then
+         allocate(IILO(IILO_len))
+    end if
+    if(.not.allocated(IIRO)) then
+        allocate(IIRO(IIRO_len))
+    end if
 
+
+
+    do i=1,IILO_len
+        IILO(i)=IILO_in(i)
+    end do
+    do i=1,IIRO_len
+        IIRO(i)=IIRO_in(i)
+    end do
+    !!print *,"n3inp_transferCDNW"
     !put your implementation here
 end subroutine n3inp_transferCDNW
 subroutine n3inp_transferCDGE(this,&
-	ZBI,ZBI_len)
+    ZBI_in,ZBI_len)
+    USE CDGE, only:ZBI
     class( QuaboxImplementation)::this
-    	real(8),intent(in),dimension(*)::ZBI
-	integer,intent(in)::ZBI_len
+        real(8),intent(in),dimension(*)::ZBI_in
+    integer,intent(in)::ZBI_len
+    integer::i
 
+    if(.not.allocated(ZBI)) then
+       allocate(ZBI(ZBI_len))
+     end if
+
+    do i=1,ZBI_len
+        ZBI(i)=ZBI_in(i)
+    end do
+    !!print *,"n3inp_transferCDGE"
     !put your implementation here
 end subroutine n3inp_transferCDGE
 subroutine n3inp_transferCCC(this,&
-	CARD,&
-	IOIN,&
-	IOPRI)
+    CARD_in,&
+    IOIN_in,&
+    IOPRI_in)
+    use CCC, only: CARD,IOIN,IOPRI
     class( QuaboxImplementation)::this
-    	character(*),intent(in)::CARD
-	integer,intent(in)::IOIN
-	integer,intent(in)::IOPRI
-
+    character(*),intent(in)::CARD_in
+    integer,intent(in)::IOIN_in
+    integer,intent(in)::IOPRI_in
+    CARD=CARD_in
+    IOIN=IOIN_in
+    IOPRI=IOPRI_in
+    !!print *,"n3inp_transferCCC"
     !put your implementation here
 end subroutine n3inp_transferCCC
 subroutine n3inp_transferCANW(this,&
-	NOBJ,&
-	ANAMO,ANAMO_len)
+    NOBJ_in,&
+    ANAMO_in,ANAMO_len)
+    use CANW, only: NOBJ,ANAMO
     class( QuaboxImplementation)::this
-    	integer,intent(in)::NOBJ
-	character(*),intent(in),dimension(*)::ANAMO
-	integer,intent(in)::ANAMO_len
+    integer,intent(in)::NOBJ_in
+    character(*),intent(in),dimension(*)::ANAMO_in
+    integer,intent(in)::ANAMO_len
+    integer::i
+    !!print *,"n3inp_transferCANW in"
+    NOBJ=NOBJ_in
+    if(.not.allocated(ANAMO)) then
+       allocate(ANAMO(ANAMO_len))
+    end if
 
+    do i = 1, ANAMO_len
+        ANAMO(i)=ANAMO_in(i)
+    end do
+    !ANAMO=ANAMO_in
+    !!print *,"n3inp_transferCANW out"
     !put your implementation here
 end subroutine n3inp_transferCANW
 subroutine n3inp_transferCADIMN(this,&
-	INM03)
+    INM03_in)
+    use CADIMN, only: INM03
     class( QuaboxImplementation)::this
-    	integer,intent(in)::INM03
+    integer,intent(in)::INM03_in
+    !!print *,"n3inp_transferCADIMN in"
+    INM03=INM03_in
 
+    !!print *,"n3inp_transferCADIMN out"
     !put your implementation here
 end subroutine n3inp_transferCADIMN
 subroutine n3inp_transferCAI(this,&
-	AIKEY_in,AIKEY_len,&
-	AICONT_in,AICONT_len)
-	use CAI, only: AIKEY,AICONT
+    AIKEY_in,AIKEY_len,AICONT_in,AICONT_len)
+    use CAI, only: AIKEY,AICONT
     class( QuaboxImplementation)::this
-     character(*),intent(in),dimension(*)::AIKEY_in
+    character(*),intent(in),dimension(*)::AIKEY_in
     character(*),intent(in),dimension(*)::AICONT_in
     integer,intent(in)::AIKEY_len
     integer,intent(in)::AICONT_len
@@ -599,11 +1119,9 @@ subroutine n3inp_transferCAI(this,&
         AICONT(i)=AICONT_in(i)
         !!print *,"Cont_word:",AICONT(i)
     end do
-
+    !!print *,"n3inp_transferCAI out"
     !put your implementation here
 end subroutine n3inp_transferCAI
-
-
 end module  grs_QuaboxImplementation
 
 

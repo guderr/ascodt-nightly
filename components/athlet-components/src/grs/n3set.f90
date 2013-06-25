@@ -36,7 +36,7 @@ call athlet_instance%log%info("grs.Athlet", "n3set() - entry")
       call athlet_instance%n3set%n3set_transferCHCO(HC,size(HC))
       !call n3set_client%n3set_transferCHRD(LFLUID,size(LFLUID))
       !LBORON - away
-      call athlet_instance%n3set%n3set_transferCKBO(LBORON,CBOR,size(CBOR),XBOR,size(XBOR))
+      !call athlet_instance%n3set%n3set_transferCKBO(LBORON,CBOR,size(CBOR),XBOR,size(XBOR))
       call athlet_instance%n3set%n3set_transferCNI(NLAYSK,size(NLAYSK),INLAYS,ISDK)
       call athlet_instance%n3set%n3set_invoke(NSEGS,size(NSEGS),IZONE,size(IZONE),NOLAYS,size(NOLAYS),SV,size(SV),TT,size(TT),IQF,size(IQF),ISEG,size(ISEG),ISD)
       call athlet_instance%n3set%n3set_transferResults(XBOR,size(XBOR),NLAYSK,size(NLAYSK),INLAYS,ISDK)

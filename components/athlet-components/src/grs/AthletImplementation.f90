@@ -40,7 +40,9 @@ subroutine start(this)
 end subroutine start
 subroutine setup(this)
     class( AthletImplementation)::this
-    call this%log%info("grs.Athlet","Startring Athlet")
+    call this%log%info("grs.Athlet","Startring Athlet setup")
+    call athlet_setup()
+    call this%log%info("grs.Athlet","Finish Athlet setup")
     !put your implementation here
 end subroutine setup
 

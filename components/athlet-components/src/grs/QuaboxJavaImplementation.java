@@ -9,8 +9,11 @@ package grs;
 
 
 public class QuaboxJavaImplementation extends QuaboxBasisJavaImplementation {
-  public QuaboxJavaImplementation( String identifier ) {
+  private QuaboxUI _ui;
+
+public QuaboxJavaImplementation( String identifier ) {
     super(identifier);
+    _ui= new QuaboxUI(this);
   }
   
   
@@ -22,21 +25,22 @@ public class QuaboxJavaImplementation extends QuaboxBasisJavaImplementation {
 
   public boolean hasGUI() {
     // @todo Insert your code here
-    return false;
+    return true;
   }
   
   
   public void openGUI() {
-    // @todo Insert your code here
+	  _ui.setVisible(true);
   }
   
   
   public void closeGUI() {
-    // @todo Insert your code here
+	  _ui.setVisible(false);
   }
 
   public void destroy(){
      super.destroy();
+     _ui.dispose();
   }
 
 }
