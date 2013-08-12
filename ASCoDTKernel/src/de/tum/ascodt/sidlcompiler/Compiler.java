@@ -21,7 +21,7 @@ import de.tum.ascodt.utils.exceptions.ASCoDTException;
  * A class used for the stand alone execution of the sidl compiler
  */
 public class Compiler {
-
+//sdgfdf
 	/**
 	 * Full command line arguments.
 	 */
